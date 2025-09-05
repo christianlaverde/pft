@@ -42,3 +42,28 @@ class Account(db.Model):
 
     def __repr__(self):
         return f'<Account {self.name} ({self.account_type})>'
+
+
+class Transaction(db.Model):
+    __tablename__ = 'transactions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    amount = db.Column(db.Numeric(10, 2), nullable=False)
+    debit_account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'), nullable=False)
+    credit_account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    debit_account = db.relationship('Account', foreign_keys=[debit_account_id])
+    credit_account = db.relationship('Account', foreign_keys=[credit_account_id])
+
+    def __init__(self, description, date, amount, debit_account_id, credit_account_id):
+        self.description = description
+        self.date = date
+        self.amount = amount
+        self.debit_account_id = debit_account_id
+        self.credit_account_id = credit_account_id
+
+    def __repr__(self):
+        return f'<Transaction ${self.amount} paid to {self.debit_account_id} by {self.credit_account_id} for {self.description} on {self.date}>'
