@@ -41,7 +41,7 @@ class Account(db.Model):
             return NormalBalance.CREDIT
 
     def __repr__(self):
-        return f'<Account {self.name} ({self.account_type})>'
+        return f'<Account {self.name}[{self.id}] ({self.account_type})>'
 
 
 class Transaction(db.Model):
