@@ -40,6 +40,21 @@ class Account(db.Model):
         else:
             return NormalBalance.CREDIT
 
+    def get_balance(self):
+        """Returns running balance"""
+        debit_transactions = Transaction.query.filter_by(debit_account_id=self.id).all()
+        credit_transactions = Transaction.query.filter_by(credit_account_id=self.id).all()
+
+        total_debits = sum(dt.amount for dt in debit_transactions)
+        total_credits = sum(ct.amount for ct in credit_transactions)
+
+        if self.normal_balance == NormalBalance.DEBIT:
+            balance = total_debits - total_credits
+        else:
+            balance = total_credits - total_debits
+
+        return balance
+
     def __repr__(self):
         return f'<Account {self.name}[{self.id}] ({self.account_type})>'
 
