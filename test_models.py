@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from flask import Flask
-from models import db, Account, AccountType, Transaction
+from models import db, Account, AccountType, NormalBalance, Transaction
 from datetime import datetime
 from decimal import Decimal
 
@@ -29,8 +29,9 @@ def test_models():
                          account_type=AccountType.LIABILITY)
         equity = Account(name="Equity",
                          account_type=AccountType.EQUITY)
+        accounts = [checking, salary, groceries, credit, equity]
 
-        db.session.add_all([checking, salary, groceries, credit, equity])
+        db.session.add_all(accounts)
         db.session.commit()
 
         print(f'Created: {checking}')
@@ -74,6 +75,11 @@ def test_models():
         print(f'Created: {income_transaction}')
         print(f'Created: {credit_transaction}')
 
+        print('\nCalculating Account Balances...')
+        for account in accounts:
+            balance = account.get_balance()
+            nb = 'DR' if account.normal_balance == NormalBalance.DEBIT else 'CR'
+            print(f'{account} Balance: ${balance}{nb}')
 
 
 test_models()
