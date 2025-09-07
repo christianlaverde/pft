@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Tracker</title>
+    <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      color: #444;
+      border-bottom: 2px solid black;
+      padding-bottom: 10px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      margin-bottom: 30px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    tr:hover {
+      background-color: #e3f2fd;
+    }
+
+    .amount {
+      text-align: right;
+      font-family: monospace;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Personal Finance Tracker</h1>
+
+      <h2>Chart of Accounts</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Account Type</th>
+            <th>Normal Balance</th>
+            <th>Current Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for account in accounts %}
+          <tr>
+            <td>{{ account.id }}</td>
+            <td>{{ account.name }}</td>
+            <td>{{ account.account_type }}</td>
+            <td>{{ account.normal_balance }}</td>
+            <td class="amount">${{ account.get_balance() }}</td>
+          </tr>
+          {% else %}
+          <td colspan="6" style="text-align: center; font-style: italic;">No Accounts Found.</td>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <h2>Transaction Log</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Debit Account (To)</th>
+            <th>Credit Account (By)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for transaction in transactions %}
+          <tr>
+            <td>{{ transaction.id }}</td>
+            <td>{{ transaction.description }}</td>
+            <td>{{ transaction.date }}</td>
+            <td>${{ transaction.amount }}</td>
+            <td>{{ transaction.debit_account.name }}</td>
+            <td>{{ transaction.credit_account.name }}</td>
+          </tr>
+          {% else %}
+          <td colspan="6" style="text-align: center; font-style: italic;">No Transactions Found.</td>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
