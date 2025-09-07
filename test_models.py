@@ -25,10 +25,12 @@ def test_models():
                          account_type=AccountType.INCOME)
         groceries = Account(name="Groceries",
                             account_type=AccountType.EXPENSE)
+        credit = Account(name="Credit Card",
+                         account_type=AccountType.LIABILITY)
         equity = Account(name="Equity",
                          account_type=AccountType.EQUITY)
 
-        db.session.add_all([checking, groceries, salary, equity])
+        db.session.add_all([checking, salary, groceries, credit, equity])
         db.session.commit()
 
         print(f'Created: {checking}')
@@ -37,6 +39,8 @@ def test_models():
         print(f'\tNormalBalance: {salary.normal_balance}')
         print(f'Created: {groceries}')
         print(f'\tNormalBalance: {groceries.normal_balance}')
+        print(f'Created: {credit}')
+        print(f'\tNormalBalance: {credit.normal_balance}')
         print(f'Created: {equity}')
         print(f'\tNormalBalance: {equity.normal_balance}')
 
@@ -56,13 +60,20 @@ def test_models():
                                          amount=Decimal('3725.25'),
                                          debit_account_id=checking.id,
                                          credit_account_id=salary.id)
+        credit_transaction = Transaction(description='Paid for Groceries',
+                                         date=datetime.now(),
+                                         amount=Decimal('87.56'),
+                                         debit_account_id=groceries.id,
+                                         credit_account_id=credit.id)
 
-        db.session.add_all([opening_balance_transaction, groceries_transaction, income_transaction])
+        db.session.add_all([opening_balance_transaction, groceries_transaction, income_transaction, credit_transaction])
         db.session.commit()
 
         print(f'Created: {opening_balance_transaction}')
         print(f'Created: {groceries_transaction}')
         print(f'Created: {income_transaction}')
+        print(f'Created: {credit_transaction}')
+
 
 
 test_models()
