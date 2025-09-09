@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Account - Personal Finance Tracker</title>
+    <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid black;
+      padding-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    input[readonly] {
+      background-color: #f8f9fa;
+      color: #6c757d;
+    }
+
+    .btn {
+      background-color: #007bff;
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      text-decoration: none;
+    }
+
+    .btn-secondary:hover {
+      background-color: #545b62;
+    }
+
+    .form-actions {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .alert {
+      text-align: center;
+      padding: 15px;
+      margin-bottom: 20px;
+      border: 1px solid;
+      border-radius: 4px;
+    }
+
+    .alert-error {
+      color: #721c24;
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+    }
+
+    .help-text {
+      font-size: 14px;
+      color: #6c757d;
+      margin-top: 5px;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Add New Account</h1>
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+
+      <form method="POST" id="account-form">
+        <div class="form-group">
+          <label for="name">Account Name *</label>
+          <input type="text" id="name" name="name" required placeholder="e.g., Cash, Checking, Savings">
+          <div class="help-text">Enter a descriptive name for this account</div>
+        </div>
+
+        <div class="form-group">
+          <label for="account-type">Account Type *</label>
+          <select id="account-type" name="account-type" required onchange="updateNormalBalance()">
+            <option value="">-- Select Account Type --</option>
+            <option value="ASSET">Asset</option>
+            <option value="LIABILITY">Liability</option>
+            <option value="EQUITY">Equity</option>
+            <option value="INCOME">Income</option>
+            <option value="EXPENSE">Expense</option>
+          </select>
+          <div class="help-text">Choose the category that best describes this account</div>
+        </div>
+
+        <div class="form-group">
+          <label for="normal-balance">Normal Balance</label>
+          <input type="text" id="normal-balance" name="normal-balance" readonly placeholder="Will auto-populate based on account type">
+          <div class="help-text">This field automatically fills based on account type</div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn">Create Account</button>
+          <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+
+    <script>
+    function updateNormalBalance() {
+      const accountType = document.getElementById('account-type').value;
+      const normalBalanceField = document.getElementById('normal-balance');
+
+      const normalBalances = {
+        'ASSET': 'Debit',
+        'LIABILITY': 'Credit',
+        'EQUITY': 'Credit',
+        'REVENUE': 'Credit',
+        'EXPENSE': 'Debit'
+      };
+
+      if (accountType && normalBalances[accountType]) {
+        normalBalanceField.value = normalBalances[accountType];
+      } else {
+        normalBalanceField.value = '';
+      }
+    }
+
+    // Form validation
+    document.getElementById('accountForm').addEventListener('submit', function(e) {
+      const name = document.getElementById('name').value.trim();
+      const accountType = document.getElementById('account_type').value;
+
+      if (!name) {
+        alert('Please enter an account name.');
+        e.preventDefault();
+        return;
+      }
+
+      if (!accountType) {
+        alert('Please select an account type.');
+        e.preventDefault();
+        return;
+      }
+    });
+    </script>
+  </body>
+</html>

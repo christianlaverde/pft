@@ -24,6 +24,7 @@
       color: #333;
       text-align: center;
       margin-bottom: 30px;
+      padding-bottom: 10px;
     }
 
     h2 {
@@ -71,6 +72,9 @@
       <h1>Personal Finance Tracker</h1>
 
       <h2>Chart of Accounts</h2>
+      <div class="actions">
+        <a href="{{ url_for('add_account') }}" class="btn">Add New Account</a>
+      </div>
       <table>
         <thead>
           <tr>

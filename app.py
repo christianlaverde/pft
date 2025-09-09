@@ -1,10 +1,13 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, url_for, flash, redirect
+from sqlalchemy import func
 from datetime import datetime
 from decimal import Decimal
 from models import db, AccountType, Account, Transaction
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pft.db'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'SECRET-DEV-KEY'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -18,6 +21,34 @@ def index():
     return render_template('dashboard.html',
                            accounts=accounts,
                            transactions=transactions)
+
+
+@app.route('/add_account', methods=['GET', 'POST'])
+def add_account():
+    """Add a new account"""
+    if request.method == 'POST':
+        name = request.form['name']
+        account_type = request.form['account-type']
+
+        existing_account = Account.query.filter(
+            func.lower(Account.name) == func.lower(name)
+        ).first()
+        if existing_account:
+            flash('Account with this name already exists!', 'error')
+            return redirect(url_for('add_account'))
+
+        new_account = Account(name=name, account_type=account_type)
+
+        try:
+            db.session.add(new_account)
+            db.session.commit()
+            flash(f'Account {name} added successfully!', 'success')
+            return redirect(url_for('index'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error adding account: {str(e)}', 'error')
+
+    return render_template('add_account.html')
 
 
 if __name__ == '__main__':
