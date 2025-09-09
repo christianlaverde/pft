@@ -65,11 +65,37 @@
       text-align: right;
       font-family: monospace;
     }
+
+    .btn {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      margin-bottom: 10px;
+      margin-right: 10px;
+      text-decoration: none;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>Personal Finance Tracker</h1>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
 
       <h2>Chart of Accounts</h2>
       <div class="actions">
