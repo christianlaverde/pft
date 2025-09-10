@@ -51,6 +51,45 @@ def add_account():
     return render_template('add_account.html')
 
 
+@app.route('/add_transaction', methods=['GET', 'POST'])
+def add_transaction():
+    """Add a new transaction"""
+    if request.method == 'POST':
+        description = request.form['description']
+        date = datetime.strptime(request.form['date'], '%Y-%m-%d')
+        amount = request.form['amount']
+        debit_account_id = request.form['debit-account']
+        credit_account_id = request.form['credit-account']
+
+        if not amount.isdigit():
+            flash('Amount must be a $ Value', 'error')
+            return redirect(url_for('add_transaction'))
+
+        if debit_account_id == credit_account_id:
+            flash('Debit and Credit Accounts cannot be the same', 'error')
+            return redirect(url_for('add_transaction'))
+
+        new_transaction = Transaction(
+                description=description,
+                date=date,
+                amount=amount,
+                debit_account_id=debit_account_id,
+                credit_account_id=credit_account_id
+        )
+
+        try:
+            db.session.add(new_transaction)
+            db.session.commit()
+            flash('Transaction created successfully!', 'success')
+            return redirect(url_for('index'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error creating transaction: {str(e)}', 'error')
+
+    accounts = Account.query.all()
+    return render_template('add_transaction.html', accounts=accounts)
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.drop_all()
