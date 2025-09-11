@@ -25,7 +25,7 @@ class Account(db.Model):
     account_type = db.Column(db.Enum(AccountType), nullable=False)
     normal_balance = db.Column(db.Enum(NormalBalance), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now())
 
     def __init__(self, name, account_type):
         self.name = name
@@ -67,7 +67,7 @@ class Transaction(db.Model):
     amount = db.Column(db.Numeric(10, 2), nullable=False)
     debit_account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'), nullable=False)
     credit_account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now())
 
     debit_account = db.relationship('Account', foreign_keys=[debit_account_id])
     credit_account = db.relationship('Account', foreign_keys=[credit_account_id])
