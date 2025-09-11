@@ -64,6 +64,7 @@
     .amount {
       text-align: right;
       font-family: monospace;
+      font-size: 18px;
     }
 
     .btn {
@@ -82,6 +83,16 @@
 
     .btn:hover {
       background-color: #0056b3;
+    }
+
+    .delete-btn {
+      background-color: #dc3545;
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .delete-btn:hover {
+      background-color: #c82333;
     }
     </style>
   </head>
@@ -109,16 +120,20 @@
             <th>Account Type</th>
             <th>Normal Balance</th>
             <th>Current Balance</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {% for account in accounts %}
-          <tr>
+          <tr data-account-id={{ account.id }}>
             <td>{{ account.id }}</td>
             <td>{{ account.name }}</td>
             <td>{{ account.account_type }}</td>
             <td>{{ account.normal_balance }}</td>
             <td class="amount">${{ account.get_balance() }}</td>
+            <td>
+              <button class="btn delete-btn" onclick="deleteAccount('{{ account.name }}', {{ account.id }})">Delete</button>
+            </td>
           </tr>
           {% else %}
           <td colspan="6" style="text-align: center; font-style: italic;">No Accounts Found.</td>
@@ -143,13 +158,17 @@
         </thead>
         <tbody>
           {% for transaction in transactions %}
-          <tr>
+          <tr class="transaction-row">
             <td>{{ transaction.id }}</td>
             <td>{{ transaction.description }}</td>
             <td>{{ transaction.date }}</td>
-            <td>${{ transaction.amount }}</td>
-            <td>{{ transaction.debit_account.name }}</td>
-            <td>{{ transaction.credit_account.name }}</td>
+            <td class="amount">${{ transaction.amount }}</td>
+            <td class="transaction-debit-account" data-account-id="{{ transaction.debit_account_id }}">
+              {{ transaction.debit_account.name }} {{ '(INACTIVE)' if not transaction.debit_account.is_active else '' }}
+            </td>
+            <td class="transaction-credit-account" data-account-id="{{ transaction.credit_account_id }}">
+              {{ transaction.credit_account.name }} {{ '(INACTIVE)' if not transaction.credit_account.is_active else '' }}
+            </td>
           </tr>
           {% else %}
           <td colspan="6" style="text-align: center; font-style: italic;">No Transactions Found.</td>
@@ -157,5 +176,60 @@
         </tbody>
       </table>
     </div>
+    <script>
+    async function deleteAccount(accountName, accountId) {
+      confirmation = confirm(`Are you sure you want to delete Account ${accountName}?`);
+
+      if (confirmation) {
+        const row = document.querySelector(`tr[data-account-id="${accountId}"`);
+        
+        try {
+          const response = await fetch(`/accounts/${accountId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            setTimeout(() => {
+              row.remove();
+              console.log(`Account ${accountId} marked as deleted`);
+            }, 300)
+
+            updateTransactionTableForInactiveAccount(accountId);
+          } else {
+            console.error(`Account ${accountId} not found`);
+          }
+        } catch (error) {
+          console.error(`Error deleting resource: ${error}`);
+        }
+      }
+    }
+
+    async function updateTransactionTableForInactiveAccount(accountId) {
+      const transactionRows = document.querySelectorAll('.transaction-row');
+
+      transactionRows.forEach(
+        row => {
+          const debitCell = row.querySelector('.transaction-debit-account');
+          if (debitCell && debitCell.dataset.accountId === accountId) {
+            const accountNameText = debitCell.textContent;
+            if (!accountNameText.includes('(INACTIVE)')) {
+              debitCell.textContent = accountNameText + '(INACTIVE)';
+            }
+          }
+
+          const creditCell = row.querySelector('.transaction-credit-account');
+          if (creditCell && parseInt(creditCell.dataset.accountId, 10) === accountId) {
+            const accountNameText = creditCell.textContent;
+            if (!accountNameText.includes('(INACTIVE)')) {
+              creditCell.textContent = accountNameText + '(INACTIVE)';
+            }
+          }
+        }
+      );
+    }
+    </script>
   </body>
 </html>

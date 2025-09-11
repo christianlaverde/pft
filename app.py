@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, flash, redirect
+from flask import Flask, render_template, request, url_for, flash, redirect, jsonify
 from sqlalchemy import func
 from datetime import datetime
 from decimal import Decimal
@@ -15,7 +15,9 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    accounts = Account.query.all()
+    accounts = Account.query.filter(
+        Account.is_active
+    ).all()
     transactions = Transaction.query.order_by(Transaction.date.desc()).all()
 
     return render_template('dashboard.html',
@@ -49,6 +51,24 @@ def add_account():
             flash(f'Error adding account: {str(e)}', 'error')
 
     return render_template('add_account.html')
+
+
+@app.route('/accounts/<int:account_id>', methods=['DELETE'])
+def delete_account(account_id):
+    """Mark an account inactive"""
+    account = Account.query.get_or_404(account_id)
+    account.is_active = False
+
+    try:
+        db.session.commit()
+        return jsonify({
+            'message': f'Account {account.name} successfully marked inactive!',
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'error': f'Error marking account inactive: {str(e)}'
+        }), 500
 
 
 @app.route('/add_transaction', methods=['GET', 'POST'])
