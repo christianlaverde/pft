@@ -4,7 +4,6 @@ from enum import Enum
 
 db = SQLAlchemy()
 
-
 class AccountType(Enum):
     ASSET = 'ASSET'
     LIABILITY = 'LIABILITY'
@@ -34,7 +33,7 @@ class Account(db.Model):
         self.normal_balance = self._get_normal_balance()
 
     def _get_normal_balance(self):
-        """Sets normal balance based on account type"""
+        """Returns normal balance based on account type"""
         if self.account_type in (AccountType.ASSET, AccountType.EXPENSE):
             return NormalBalance.DEBIT
         else:
