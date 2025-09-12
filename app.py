@@ -106,7 +106,9 @@ def add_transaction():
             db.session.rollback()
             flash(f'Error creating transaction: {str(e)}', 'error')
 
-    accounts = Account.query.all()
+    accounts = Account.query.filter(
+        Account.is_active
+    ).all()
     return render_template('add_transaction.html', accounts=accounts)
 
 
