@@ -150,6 +150,40 @@ def add_transaction():
     return render_template('add_transaction.html', accounts=accounts)
 
 
+@app.route('/transactions/<int:transaction_id>', methods=['GET', 'POST', 'PATCH', 'DELETE'])
+def update_or_delete_transaction(transaction_id):
+    """Update or Delete Account"""
+    if request.method == 'POST' and '_method' in request.form:
+        request.method = request.form['_method'].upper()
+
+    if request.method == 'DELETE':
+        transaction = Transaction.query.get_or_404(transaction_id)
+        transaction.is_active = False
+
+        try:
+            db.session.commit()
+            return jsonify({
+                'message': f'Transaction {transaction.id} marked as deleted!',
+                'debitAccount': {
+                    'id': transaction.debit_account.id,
+                    'balance': transaction.debit_account.get_balance(),
+                },
+                'creditAccount': {
+                    'id': transaction.credit_account.id,
+                    'balance': transaction.credit_account.get_balance(),
+                },
+            }), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({
+                'error': f'Error marking account inactive: {str(e)}'
+            }), 500
+    elif request.method == 'PATCH':
+        return jsonify({'message': 'Not Implemented'}), 500
+    else:
+        return jsonify({'message': 'Not Implemented'}), 500
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.drop_all()

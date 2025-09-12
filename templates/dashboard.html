@@ -69,10 +69,10 @@
 
     .alert {
       text-align: center;
-        padding: 15px;
-        margin-bottom: 20px;
-        border: 1px solid;
-        border-radius: 4px;
+      padding: 15px;
+      margin-bottom: 20px;
+      border: 1px solid;
+      border-radius: 4px;
     }
 
     .alert-error {
@@ -144,7 +144,7 @@
         </thead>
         <tbody>
           {% for account in accounts %}
-          <tr data-account-id={{ account.id }}>
+          <tr data-account-id={{ account.id }} class="account-row">
             <td>{{ account.id }}</td>
             <td>{{ account.name }}</td>
             <td>{{ account.account_type }}</td>
@@ -174,11 +174,13 @@
             <th>Amount</th>
             <th>Debit Account (To)</th>
             <th>Credit Account (By)</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {% for transaction in transactions %}
-          <tr class="transaction-row">
+          {% if transaction.is_active %}
+          <tr data-transaction-id="{{ transaction.id }}" class="transaction-row">
             <td>{{ transaction.id }}</td>
             <td>{{ transaction.description }}</td>
             <td>{{ transaction.date }}</td>
@@ -189,7 +191,11 @@
             <td class="transaction-credit-account" data-account-id="{{ transaction.credit_account_id }}">
               {{ transaction.credit_account.name }} {{ '(INACTIVE)' if not transaction.credit_account.is_active else '' }}
             </td>
+            <td>
+              <button class="btn delete-btn" onclick="deleteTransaction({{ transaction.id }})">Delete</button>
+            </td>
           </tr>
+          {% endif %}
           {% else %}
           <td colspan="6" style="text-align: center; font-style: italic;">No Transactions Found.</td>
           {% endfor %}
@@ -249,6 +255,54 @@
           }
         }
       );
+    }
+
+    async function deleteTransaction(transactionId) {
+      confirmation = confirm(`Are you sure you want to delete Transaction '${transactionId}'?`);
+
+      if (confirmation) {
+        const row = document.querySelector(`tr[data-transaction-id="${transactionId}"]`);
+
+        try {
+          const response = await fetch(`/transactions/${transactionId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            updateAccountBalances(data.debitAccount.id, data.debitAccount.balance, data.creditAccount.id, data.creditAccount.balance); 
+            setTimeout(() => {
+              row.remove();
+              console.log(`Transaction ${transactionId} marked as deleted`);
+            }, 300)
+          } else {
+            console.error(`Transaction ${transactionId} not found`);
+          }
+        } catch (error) {
+          console.error(`Error deleting resource: ${error}`);
+        }
+      }
+    }
+
+    async function updateAccountBalances(debitAccountId, debitAccountBalance, creditAccountId, creditAccountBalance) {
+      const debitAccountRow = document.querySelector(`tr[data-account-id="${debitAccountId}"]`);
+      if (debitAccountRow) {
+        const balanceCell = debitAccountRow.querySelector('.amount');
+        if (balanceCell) {
+          balanceCell.textContent = `$${debitAccountBalance}`;
+        }
+      }
+
+      const creditAccountRow = document.querySelector(`tr[data-account-id="${creditAccountId}"]`);
+      if (creditAccountRow) {
+        const balanceCell = creditAccountRow.querySelector('.amount');
+        if (balanceCell) {
+          balanceCell.textContent = `$${creditAccountBalance}`;
+        }
+      }
     }
     </script>
   </body>

@@ -45,8 +45,8 @@ class Account(db.Model):
         debit_transactions = Transaction.query.filter_by(debit_account_id=self.id).all()
         credit_transactions = Transaction.query.filter_by(credit_account_id=self.id).all()
 
-        total_debits = sum(dt.amount for dt in debit_transactions)
-        total_credits = sum(ct.amount for ct in credit_transactions)
+        total_debits = sum(dt.amount for dt in debit_transactions if dt.is_active)
+        total_credits = sum(ct.amount for ct in credit_transactions if ct.is_active)
 
         if self.normal_balance is NormalBalance.DEBIT:
             balance = total_debits - total_credits
@@ -68,6 +68,7 @@ class Transaction(db.Model):
     amount = db.Column(db.Numeric(10, 2), nullable=False)
     debit_account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'), nullable=False)
     credit_account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'), nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.now())
 
     debit_account = db.relationship('Account', foreign_keys=[debit_account_id])
