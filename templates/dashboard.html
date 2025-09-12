@@ -67,6 +67,20 @@
       font-size: 18px;
     }
 
+    .alert {
+      text-align: center;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid;
+        border-radius: 4px;
+    }
+
+    .alert-error {
+      color: #721c24;
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+    }
+
     .btn {
       background-color: #007bff;
       color: white;
@@ -101,11 +115,11 @@
       <h1>Personal Finance Tracker</h1>
 
       {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
       {% endwith %}
 
       <h2>Chart of Accounts</h2>
@@ -182,7 +196,7 @@
 
       if (confirmation) {
         const row = document.querySelector(`tr[data-account-id="${accountId}"`);
-        
+
         try {
           const response = await fetch(`/accounts/${accountId}`, {
             method: 'DELETE',

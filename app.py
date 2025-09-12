@@ -29,22 +29,27 @@ def index():
 def add_account():
     """Add a new account"""
     if request.method == 'POST':
-        name = request.form['name']
+        account_name = request.form['account-name']
         account_type = request.form['account-type']
 
+        try:
+            account_type = AccountType[account_type]
+        except KeyError:
+            flash('Incorrect Account Type', 'error')
+
         existing_account = Account.query.filter(
-            func.lower(Account.name) == func.lower(name)
+            func.lower(Account.name) == func.lower(account_name)
         ).first()
         if existing_account:
             flash('Account with this name already exists!', 'error')
             return redirect(url_for('add_account'))
 
-        new_account = Account(name=name, account_type=account_type)
+        new_account = Account(name=account_name, account_type=account_type)
 
         try:
             db.session.add(new_account)
             db.session.commit()
-            flash(f'Account {name} added successfully!', 'success')
+            flash(f'Account {account_name} added successfully!', 'success')
             return redirect(url_for('index'))
         except Exception as e:
             db.session.rollback()

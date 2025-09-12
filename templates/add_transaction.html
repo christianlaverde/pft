@@ -109,11 +109,11 @@
 
       <!-- Flash messages -->
       {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-      {% for category, message in messages %}
-      <div class="alert alert-{{ category }}">{{ message }}</div>
-      {% endfor %}
-      {% endif %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
       {% endwith %}
 
       <form method="POST" id="transaction-form">
@@ -140,7 +140,7 @@
           <select id="debit-account" name="debit-account" required>
             <option value="">-- Select Debit Account --</option>
             {% for account in accounts %}
-            <option value={{ account.id }}>{{ account.name }}</option>
+              <option value={{ account.id }}>{{ account.name }}</option>
             {% endfor %}
           </select>
           <div class="help-text">Select Debit Account</div>

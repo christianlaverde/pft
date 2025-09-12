@@ -30,11 +30,12 @@ class Account(db.Model):
     def __init__(self, name, account_type):
         self.name = name
         self.account_type = account_type
-        self.normal_balance = self._get_normal_balance()
+        self.normal_balance = Account._get_normal_balance(account_type)
 
-    def _get_normal_balance(self):
+    @staticmethod
+    def _get_normal_balance(account_type):
         """Returns normal balance based on account type"""
-        if self.account_type in (AccountType.ASSET, AccountType.EXPENSE):
+        if account_type in (AccountType.ASSET, AccountType.EXPENSE):
             return NormalBalance.DEBIT
         else:
             return NormalBalance.CREDIT
@@ -47,7 +48,7 @@ class Account(db.Model):
         total_debits = sum(dt.amount for dt in debit_transactions)
         total_credits = sum(ct.amount for ct in credit_transactions)
 
-        if self.normal_balance == NormalBalance.DEBIT:
+        if self.normal_balance is NormalBalance.DEBIT:
             balance = total_debits - total_credits
         else:
             balance = total_credits - total_debits
