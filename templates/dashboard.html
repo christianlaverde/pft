@@ -105,6 +105,11 @@
       font-size: 12px;
     }
 
+    .update-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
     .delete-btn:hover {
       background-color: #c82333;
     }
@@ -147,6 +152,7 @@
             <td class="amount">${{ account.get_balance() }}</td>
             <td>
               <button class="btn delete-btn" onclick="deleteAccount('{{ account.name }}', {{ account.id }})">Delete</button>
+              <a href="{{ url_for('update_or_delete_account', account_id=account.id) }}" class="btn update-btn">Edit</a>
             </td>
           </tr>
           {% else %}

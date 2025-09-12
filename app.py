@@ -58,22 +58,55 @@ def add_account():
     return render_template('add_account.html')
 
 
-@app.route('/accounts/<int:account_id>', methods=['DELETE'])
-def delete_account(account_id):
-    """Mark an account inactive"""
-    account = Account.query.get_or_404(account_id)
-    account.is_active = False
+@app.route('/accounts/<int:account_id>', methods=['GET', 'POST', 'PATCH', 'DELETE'])
+def update_or_delete_account(account_id):
+    """Update or Delete Account"""
+    if request.method == 'POST' and '_method' in request.form:
+        request.method = request.form['_method'].upper()
 
-    try:
-        db.session.commit()
-        return jsonify({
-            'message': f'Account {account.name} successfully marked inactive!',
-        }), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({
-            'error': f'Error marking account inactive: {str(e)}'
-        }), 500
+    if request.method == 'DELETE':
+        account = Account.query.get_or_404(account_id)
+        account.is_active = False
+
+        try:
+            db.session.commit()
+            return jsonify({
+                'message': f'Account {account.name} successfully marked inactive!',
+            }), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({
+                'error': f'Error marking account inactive: {str(e)}'
+            }), 500
+    elif request.method == 'PATCH':
+        account_new_name = request.form['account-name']
+        account = Account.query.get_or_404(account_id)
+
+        if account.name == account_new_name:
+            flash(f'Account {account.name} has not been modified!')
+            return redirect(url_for('index'))
+
+        existing_account = Account.query.filter(
+            func.lower(Account.name) == func.lower(account_new_name)
+        ).first()
+        if existing_account:
+            flash(f"Account with the name '{account_new_name}' already exists!", 'error')
+            return render_template('update_account.html', account=account)
+
+        account.name = account_new_name
+
+        try:
+            db.session.commit()
+            flash(f'Account Name {account.name} updated successfully!', 'success')
+            return redirect(url_for('index'))
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({
+                'error': f'Error updating account: {str(e)}'
+            }), 500
+    else:
+        account = Account.query.get_or_404(account_id)
+        return render_template('update_account.html', account=account)
 
 
 @app.route('/add_transaction', methods=['GET', 'POST'])
@@ -95,11 +128,11 @@ def add_transaction():
             return redirect(url_for('add_transaction'))
 
         new_transaction = Transaction(
-                description=description,
-                date=date,
-                amount=amount,
-                debit_account_id=debit_account_id,
-                credit_account_id=credit_account_id
+            description=description,
+            date=date,
+            amount=amount,
+            debit_account_id=debit_account_id,
+            credit_account_id=credit_account_id
         )
 
         try:
