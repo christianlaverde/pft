@@ -19,15 +19,15 @@ def test_models():
         db.create_all()
 
         print("Creating Accounts...")
-        checking = Account(name="Checking",
+        checking = Account(account_name="Checking",
                            account_type=AccountType.ASSET)
-        salary = Account(name="Salary",
+        salary = Account(account_name="Salary",
                          account_type=AccountType.INCOME)
-        groceries = Account(name="Groceries",
+        groceries = Account(account_name="Groceries",
                             account_type=AccountType.EXPENSE)
-        credit = Account(name="Credit Card",
+        credit = Account(account_name="Credit Card",
                          account_type=AccountType.LIABILITY)
-        equity = Account(name="Equity",
+        equity = Account(account_name="Equity",
                          account_type=AccountType.EQUITY)
         accounts = [checking, salary, groceries, credit, equity]
 

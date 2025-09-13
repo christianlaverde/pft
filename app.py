@@ -44,7 +44,7 @@ def add_account():
             flash('Account with this name already exists!', 'error')
             return redirect(url_for('add_account'))
 
-        new_account = Account(name=account_name, account_type=account_type)
+        new_account = Account(account_name=account_name, account_type=account_type)
 
         try:
             db.session.add(new_account)
@@ -226,15 +226,15 @@ if __name__ == '__main__':
         db.drop_all()
         db.create_all()
 
-        checking = Account(name="Checking",
+        checking = Account(account_name="Checking",
                            account_type=AccountType.ASSET)
-        salary = Account(name="Salary",
+        salary = Account(account_name="Salary",
                          account_type=AccountType.INCOME)
-        groceries = Account(name="Groceries",
+        groceries = Account(account_name="Groceries",
                             account_type=AccountType.EXPENSE)
-        credit = Account(name="Credit Card",
+        credit = Account(account_name="Credit Card",
                          account_type=AccountType.LIABILITY)
-        equity = Account(name="Equity",
+        equity = Account(account_name="Equity",
                          account_type=AccountType.EQUITY)
         accounts = [checking, salary, groceries, credit, equity]
         db.session.add_all(accounts)
