@@ -64,7 +64,7 @@ class Transaction(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(100), nullable=False)
-    date = db.Column(db.DateTime, nullable=False)
+    date = db.Column(db.Date, nullable=False)
     amount = db.Column(db.Numeric(10, 2), nullable=False)
     debit_account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'), nullable=False)
     credit_account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'), nullable=False)
