@@ -193,6 +193,7 @@
             </td>
             <td>
               <button class="btn delete-btn" onclick="deleteTransaction({{ transaction.id }})">Delete</button>
+              <a href="{{ url_for('update_or_delete_transaction', transaction_id=transaction.id) }}" class="btn update-btn">Edit</a>
             </td>
           </tr>
           {% endif %}

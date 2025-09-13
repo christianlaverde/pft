@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for, flash, redirect, jsonify
 from sqlalchemy import func
 from datetime import datetime
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from models import db, AccountType, Account, Transaction
 import os
 
@@ -113,15 +113,16 @@ def update_or_delete_account(account_id):
 def add_transaction():
     """Add a new transaction"""
     if request.method == 'POST':
-        description = request.form['description']
-        date = datetime.strptime(request.form['date'], '%Y-%m-%d')
-        amount = request.form['amount']
-        debit_account_id = request.form['debit-account']
-        credit_account_id = request.form['credit-account']
+        description = request.form['transaction-description']
+        date = datetime.strptime(request.form['transaction-date'], '%Y-%m-%d')
+        amount = request.form['transaction-amount']
+        debit_account_id = request.form['transaction-debit-account']
+        credit_account_id = request.form['transaction-credit-account']
 
-        if not amount.isdigit():
+        try:
+            amount = Decimal(amount)
+        except InvalidOperation:
             flash('Amount must be a $ Value', 'error')
-            return redirect(url_for('add_transaction'))
 
         if debit_account_id == credit_account_id:
             flash('Debit and Credit Accounts cannot be the same', 'error')
@@ -152,7 +153,7 @@ def add_transaction():
 
 @app.route('/transactions/<int:transaction_id>', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def update_or_delete_transaction(transaction_id):
-    """Update or Delete Account"""
+    """Update or Delete Transaction"""
     if request.method == 'POST' and '_method' in request.form:
         request.method = request.form['_method'].upper()
 
@@ -179,9 +180,45 @@ def update_or_delete_transaction(transaction_id):
                 'error': f'Error marking account inactive: {str(e)}'
             }), 500
     elif request.method == 'PATCH':
-        return jsonify({'message': 'Not Implemented'}), 500
+        accounts = Account.query.filter(Account.is_active).all()
+        transaction = Transaction.query.get_or_404(transaction_id)
+
+        description = request.form['transaction-description']
+        date = datetime.strptime(request.form['transaction-date'], '%Y-%m-%d')
+        amount = request.form['transaction-amount']
+        debit_account_id = request.form['transaction-debit-account']
+        credit_account_id = request.form['transaction-credit-account']
+
+        try:
+            amount = Decimal(amount)
+        except InvalidOperation:
+            flash('Amount must be a $ Value', 'error')
+            return render_template('update_transaction.html', transaction=transaction, accounts=accounts)
+
+        if debit_account_id == credit_account_id:
+            flash('Debit and Credit Accounts cannot be the same', 'error')
+            return render_template('update_transaction.html', transaction=transaction, accounts=accounts)
+        
+        transaction.description = description
+        transaction.date = date
+        transaction.amount = amount
+        transaction.debit_account_id = debit_account_id
+        transaction.credit_account_id = credit_account_id
+
+        try:
+            db.session.commit()
+            flash(f'Transaction {transaction.id} updated successfully!', 'success')
+            return redirect(url_for('index'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating Transaction {transaction.id}', 'error')
+            return jsonify({
+                'error': f'Error updating account: {str(e)}'
+            }), 500
     else:
-        return jsonify({'message': 'Not Implemented'}), 500
+        accounts = Account.query.filter(Account.is_active).all()
+        transaction = Transaction.query.get_or_404(transaction_id)
+        return render_template('update_transaction.html', transaction=transaction, accounts=accounts)
 
 
 if __name__ == '__main__':
