@@ -15,9 +15,7 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    accounts = Account.query.filter(
-        Account.is_active
-    ).all()
+    accounts = Account.query.filter(Account.is_active).all()
     transactions = Transaction.query.order_by(Transaction.date.desc()).all()
 
     return render_template('dashboard.html',
@@ -38,7 +36,8 @@ def add_account():
             flash('Incorrect Account Type', 'error')
 
         existing_account = Account.query.filter(
-            func.lower(Account.name) == func.lower(account_name)
+            func.lower(Account.name) == func.lower(account_name),
+            Account.is_active
         ).first()
         if existing_account:
             flash('Account with this name already exists!', 'error')
@@ -265,4 +264,4 @@ if __name__ == '__main__':
         db.session.add_all(transactions)
         db.session.commit()
 
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
