@@ -4,6 +4,7 @@ from enum import Enum
 
 db = SQLAlchemy()
 
+
 class AccountType(Enum):
     ASSET = 'ASSET'
     LIABILITY = 'LIABILITY'

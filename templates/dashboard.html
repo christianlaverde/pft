@@ -156,7 +156,10 @@
             </td>
           </tr>
           {% else %}
-          <td colspan="6" style="text-align: center; font-style: italic;">No Accounts Found.</td>
+          <td colspan="6" style="text-align: center; font-style: italic;">
+            No Accounts Found.
+            <a href="{{ url_for('add_account') }}">Create one now.</a>
+          </td>
           {% endfor %}
         </tbody>
       </table>
@@ -198,7 +201,10 @@
           </tr>
           {% endif %}
           {% else %}
-          <td colspan="6" style="text-align: center; font-style: italic;">No Transactions Found.</td>
+          <td colspan="6" style="text-align: center; font-style: italic;">
+            No Transactions Found.
+            <a href="{{ url_for('add_transaction') }}">Create one now.</a>
+          </td>
           {% endfor %}
         </tbody>
       </table>
