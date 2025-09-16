@@ -75,6 +75,12 @@
       border-radius: 4px;
     }
 
+    .alert-success {
+      color: #33593d;
+      background-color: #7bd492;
+      border-color: #68b37b;
+    }
+
     .alert-error {
       color: #721c24;
       background-color: #f8d7da;
@@ -201,7 +207,7 @@
           </tr>
           {% endif %}
           {% else %}
-          <td colspan="6" style="text-align: center; font-style: italic;">
+          <td colspan="7" style="text-align: center; font-style: italic;">
             No Transactions Found.
             <a href="{{ url_for('add_transaction') }}">Create one now.</a>
           </td>
