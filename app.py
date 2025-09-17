@@ -5,7 +5,7 @@ from decimal import Decimal, InvalidOperation
 from models import db, AccountType, Account, Transaction
 from dotenv import load_dotenv
 import os
-from test_models import setup_test_db
+from helper_funcs import setup_test_db
 
 load_dotenv()
 

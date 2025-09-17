@@ -1,15 +1,8 @@
 #!/usr/bin/python3
 
-from flask import Flask
-from models import db, Account, AccountType, NormalBalance, Transaction
+from models import db, Account, AccountType, Transaction
 from datetime import datetime
 from decimal import Decimal
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_finance.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db.init_app(app)
 
 
 def setup_test_db(app):
