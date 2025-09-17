@@ -143,7 +143,7 @@
             <th>ID</th>
             <th>Name</th>
             <th>Account Type</th>
-            <th>Normal Balance</th>
+            <!-- <th>Normal Balance</th> -->
             <th>Current Balance</th>
             <th>Actions</th>
           </tr>
@@ -154,7 +154,7 @@
             <td>{{ account.id }}</td>
             <td>{{ account.name }}</td>
             <td>{{ account.type.value.capitalize() }}</td>
-            <td>{{ account.normal_balance.value.capitalize() }}</td>
+            <!-- <td>{{ account.normal_balance.value.capitalize() }}</td> -->
             <td class="amount">${{ account.get_balance() }}</td>
             <td>
               <button class="btn delete-btn" onclick="deleteAccount('{{ account.name }}', {{ account.id }})">Delete</button>
