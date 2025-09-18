@@ -168,7 +168,7 @@ def update_or_delete_transaction(transaction_id):
         try:
             db.session.commit()
             return jsonify({
-                'message': f'Transaction {transaction.id} marked as deleted!',
+                'message': f'Transaction \'{transaction.id}\' marked as deleted!',
                 'debitAccount': {
                     'id': transaction.debit_account.id,
                     'balance': transaction.debit_account.get_balance(),
@@ -181,7 +181,7 @@ def update_or_delete_transaction(transaction_id):
         except Exception as e:
             db.session.rollback()
             return jsonify({
-                'error': f'Error marking account inactive: {str(e)}'
+                'error': f'Error deleting transaction: {str(e)}'
             }), 500
     elif request.method == 'PATCH':
         accounts = Account.query.filter(Account.is_active).all()
@@ -211,7 +211,7 @@ def update_or_delete_transaction(transaction_id):
 
         try:
             db.session.commit()
-            flash(f'Transaction {transaction.id} updated successfully!', 'success')
+            flash(f'Transaction updated successfully!', 'success')
             return redirect(url_for('index'))
         except Exception as e:
             db.session.rollback()

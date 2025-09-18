@@ -227,7 +227,6 @@
           if (response.ok) {
             setTimeout(() => {
               row.remove();
-              console.log(`Account ${accountId} marked as deleted`);
             }, 300)
 
             updateTransactionTableForInactiveAccount(accountId);
