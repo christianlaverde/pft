@@ -113,6 +113,13 @@ def update_or_delete_account(account_id):
         return render_template('update_account.html', account=account)
 
 
+@app.route('/transactions', methods=['GET'])
+def transactions():
+    transactions = Transaction.query.order_by(Transaction.date.desc()).all()
+
+    return render_template('transactions.html', transactions=transactions)
+
+
 @app.route('/add_transaction', methods=['GET', 'POST'])
 def add_transaction():
     """Add a new transaction"""

@@ -133,43 +133,51 @@
       {% endif %}
       {% endwith %}
 
-      <a href="{{ url_for('add_transaction') }}" class="btn">New Transaction</a>
-      <a href="{{ url_for('transactions') }}" class="btn">Transaction Log</a>
+      <a href="{{ url_for('index') }}" class="btn">Dashboard</a>
 
-      <h2>Accounts</h2>
+      <h2>Transaction Log</h2>
       <div class="actions">
-        <a href="{{ url_for('add_account') }}" class="btn">Add New Account</a>
+        <a href="{{ url_for('add_transaction') }}" class="btn">Add New Transaction</a>
       </div>
-      <table
+      <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Account Type</th>
-            <th>Current Balance</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Debit Account (To)</th>
+            <th>Credit Account (By)</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {% for account in accounts %}
-          <tr data-account-id={{ account.id }} class="account-row">
-            <td>{{ account.name }}</td>
-            <td>{{ account.type.value.capitalize() }}</td>
-            <td class="amount">${{ account.get_balance() }}</td>
+          {% for transaction in transactions %}
+          {% if transaction.is_active %}
+          <tr data-transaction-id="{{ transaction.id }}" class="transaction-row">
+            <td>{{ transaction.description }}</td>
+            <td>{{ transaction.date }}</td>
+            <td class="amount">${{ transaction.amount }}</td>
+            <td class="transaction-debit-account" data-account-id="{{ transaction.debit_account_id }}">
+              {{ transaction.debit_account.name }} {{ '(INACTIVE)' if not transaction.debit_account.is_active else '' }}
+            </td>
+            <td class="transaction-credit-account" data-account-id="{{ transaction.credit_account_id }}">
+              {{ transaction.credit_account.name }} {{ '(INACTIVE)' if not transaction.credit_account.is_active else '' }}
+            </td>
             <td>
-              <button class="btn delete-btn" onclick="deleteAccount('{{ account.name }}', {{ account.id }})">Delete</button>
-              <a href="{{ url_for('update_or_delete_account', account_id=account.id) }}" class="btn update-btn">Edit</a>
+              <button class="btn delete-btn" onclick="deleteTransaction({{ transaction.id }})">Delete</button>
+              <a href="{{ url_for('update_or_delete_transaction', transaction_id=transaction.id) }}" class="btn update-btn">Edit</a>
             </td>
           </tr>
+          {% endif %}
           {% else %}
-          <td colspan="5" style="text-align: center; font-style: italic;">
-            No Accounts Found.
-            <a href="{{ url_for('add_account') }}">Create one now.</a>
+          <td colspan="7" style="text-align: center; font-style: italic;">
+            No Transactions Found.
+            <a href="{{ url_for('add_transaction') }}">Create one now.</a>
           </td>
           {% endfor %}
         </tbody>
       </table>
     </div>
-
     <script>
     async function deleteAccount(accountName, accountId) {
       confirmation = confirm(`Are you sure you want to delete Account ${accountName}?`);
@@ -274,3 +282,4 @@
     </script>
   </body>
 </html>
+
