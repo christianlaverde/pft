@@ -124,16 +124,8 @@ def update_or_delete_account(account_id):
         return render_template('update_account.html', account=account)
 
 
-@app.route('/transactions', methods=['GET'])
+@app.route('/transactions', methods=['GET', 'POST'])
 def transactions():
-    transactions = Transaction.query.order_by(Transaction.date.desc()).all()
-
-    return render_template('transactions.html', transactions=transactions)
-
-
-@app.route('/add_transaction', methods=['GET', 'POST'])
-def add_transaction():
-    """Add a new transaction"""
     if request.method == 'POST':
         description = request.form['transaction-description']
         date = datetime.strptime(request.form['transaction-date'], '%Y-%m-%d')
@@ -145,6 +137,7 @@ def add_transaction():
             amount = Decimal(amount)
         except InvalidOperation:
             flash('Amount must be a $ Value', 'error')
+            return redirect(url_for('add_transaction'))
 
         if debit_account_id == credit_account_id:
             flash('Debit and Credit Accounts cannot be the same', 'error')
@@ -166,7 +159,14 @@ def add_transaction():
         except Exception as e:
             db.session.rollback()
             flash(f'Error creating transaction: {str(e)}', 'error')
+            return redirect(url_for('add_transaction'))
+    else:
+        transactions = Transaction.query.order_by(Transaction.date.desc()).all()
+        return render_template('transactions.html', transactions=transactions)
 
+
+@app.route('/transactions/new', methods=['GET', 'POST'])
+def add_transaction():
     accounts = Account.query.filter(
         Account.is_active
     ).all()

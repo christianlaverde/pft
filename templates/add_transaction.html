@@ -137,7 +137,7 @@
         {% endif %}
       {% endwith %}
 
-      <form method="POST" id="transaction-form">
+      <form method="POST" action="{{ url_for('transactions') }}" id="transaction-form">
         <div class="form-group">
           <label for="transaction-description">Description *</label>
           <input type="text" id="transaction-description" name="transaction-description" required>
