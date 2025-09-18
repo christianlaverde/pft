@@ -20,12 +20,8 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    accounts = Account.query.filter(Account.is_active).all()
-    transactions = Transaction.query.order_by(Transaction.date.desc()).all()
+    return redirect(url_for('accounts'))
 
-    return render_template('dashboard.html',
-                           accounts=accounts,
-                           transactions=transactions)
 
 @app.route('/accounts', methods=['GET', 'POST'])
 def accounts():
@@ -59,13 +55,43 @@ def accounts():
             flash(f'Error adding account: {str(e)}', 'error')
             return redirect(url_for('add_account'))
     else:
-        accounts = db.session.execute(
+        assets = db.session.execute(
             db.select(Account).where(
-                Account.is_active
+                Account.is_active,
+                Account.type == AccountType.ASSET
+            )
+        ).scalars().all()
+        expenses = db.session.execute(
+            db.select(Account).where(
+                Account.is_active,
+                Account.type == AccountType.EXPENSE
+            )
+        ).scalars().all()
+        incomes = db.session.execute(
+            db.select(Account).where(
+                Account.is_active,
+                Account.type == AccountType.INCOME
+            )
+        ).scalars().all()
+        liabilities = db.session.execute(
+            db.select(Account).where(
+                Account.is_active,
+                Account.type == AccountType.LIABILITY
+            )
+        ).scalars().all()
+        equities = db.session.execute(
+            db.select(Account).where(
+                Account.is_active,
+                Account.type == AccountType.EQUITY
             )
         ).scalars().all()
 
-        return render_template('accounts.html', accounts=accounts)
+        return render_template('accounts.html',
+                               assets=assets,
+                               expenses=expenses,
+                               incomes=incomes,
+                               liabilities=liabilities,
+                               equities=equities)
 
 
 @app.route('/accounts/new', methods=['GET'])

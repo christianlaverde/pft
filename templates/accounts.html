@@ -134,7 +134,6 @@
       {% endwith %}
 
       <div class="actions">
-        <a href="{{ url_for('index') }}" class="btn">Dashboard</a>
         <a href="{{ url_for('accounts') }}" class="btn">Accounts</a>
         <a href="{{ url_for('transactions') }}" class="btn">Transaction Log</a>
       </div>
@@ -144,66 +143,259 @@
       </div>
 
       <h2>Accounts</h2>
-      <div class="actions">
-        <a href="{{ url_for('add_account') }}" class="btn">Add New Account</a>
-      </div>
-      <table
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Account Type</th>
-            <th>Current Balance</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for account in accounts %}
-          <tr data-account-id={{ account.id }} class="account-row">
-            <td>{{ account.name }}</td>
-            <td>{{ account.type.value.capitalize() }}</td>
-            <td class="amount">${{ account.get_balance() }}</td>
-            <td>
-              <button class="btn delete-btn" onclick="deleteAccount('{{ account.name }}', {{ account.id }})">Delete</button>
-              <a href="{{ url_for('update_or_delete_account', account_id=account.id) }}" class="btn update-btn">Edit</a>
+
+      <div>
+        <h3>Asset</h3>
+        <table
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Current Balance</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for asset in assets %}
+            <tr data-account-id={{ asset.id }} class="account-row">
+              <td>{{ asset.name }}</td>
+              <td class="amount">${{ asset.get_balance() }}</td>
+              <td>
+                <button class="btn delete-btn" onclick="deleteAccount('{{ asset.name }}', {{ asset.id }})">Delete</button>
+                <a href="{{ url_for('update_or_delete_account', account_id=asset.id) }}" class="btn update-btn">Edit</a>
+              </td>
+            </tr>
+            {% else %}
+            <td colspan="3" style="text-align: center; font-style: italic;">
+              No Asset Accounts Found.
+              <a href="{{ url_for('add_account') }}">Create one now.</a>
             </td>
-          </tr>
-          {% else %}
-          <td colspan="5" style="text-align: center; font-style: italic;">
-            No Accounts Found.
-            <a href="{{ url_for('add_account') }}">Create one now.</a>
-          </td>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
-    <script>
-    async function deleteAccount(accountName, accountId) {
-      confirmation = confirm(`Are you sure you want to delete Account ${accountName}?`);
+      <div>
+        <h3>Expense</h3>
+        <table
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Current Balance</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for expense in expenses %}
+            <tr data-account-id={{ expense.id }} class="account-row">
+              <td>{{ expense.name }}</td>
+              <td class="amount">${{ expense.get_balance() }}</td>
+              <td>
+                <button class="btn delete-btn" onclick="deleteAccount('{{ expense.name }}', {{ expense.id }})">Delete</button>
+                <a href="{{ url_for('update_or_delete_account', account_id=expense.id) }}" class="btn update-btn">Edit</a>
+              </td>
+            </tr>
+            {% else %}
+            <td colspan="3" style="text-align: center; font-style: italic;">
+              No Expense Accounts Found.
+              <a href="{{ url_for('add_account') }}">Create one now.</a>
+            </td>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
-      if (confirmation) {
-        const row = document.querySelector(`tr[data-account-id="${accountId}"`);
+      <div>
+        <h3>Income</h3>
+        <table
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Current Balance</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for income in incomes %}
+            <tr data-account-id={{ income.id }} class="account-row">
+              <td>{{ income.name }}</td>
+              <td class="amount">${{ income.get_balance() }}</td>
+              <td>
+                <button class="btn delete-btn" onclick="deleteAccount('{{ income.name }}', {{ income.id }})">Delete</button>
+                <a href="{{ url_for('update_or_delete_account', account_id=income.id) }}" class="btn update-btn">Edit</a>
+              </td>
+            </tr>
+            {% else %}
+            <td colspan="3" style="text-align: center; font-style: italic;">
+              No Income Accounts Found.
+              <a href="{{ url_for('add_account') }}">Create one now.</a>
+            </td>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
-        try {
-          const response = await fetch(`/accounts/${accountId}`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
+      <div>
+        <h3>Liability</h3>
+        <table
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Current Balance</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for liability in liabilities %}
+            <tr data-account-id={{ liability.id }} class="account-row">
+              <td>{{ liability.name }}</td>
+              <td class="amount">${{ liability.get_balance() }}</td>
+              <td>
+                <button class="btn delete-btn" onclick="deleteAccount('{{ liability.name }}', {{ liability.id }})">Delete</button>
+                <a href="{{ url_for('update_or_delete_account', account_id=liability.id) }}" class="btn update-btn">Edit</a>
+              </td>
+            </tr>
+            {% else %}
+            <td colspan="3" style="text-align: center; font-style: italic;">
+              No Liability Accounts Found.
+              <a href="{{ url_for('add_account') }}">Create one now.</a>
+            </td>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
-          if (response.ok) {
-            setTimeout(() => {
-              row.remove();
-            }, 300)
-          } else {
-            console.error(`Account ${accountId} not found`);
+      <div>
+        <h3>Equity</h3>
+        <table
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Current Balance</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for equity in equities %}
+            <tr data-account-id={{ equity.id }} class="account-row">
+              <td>{{ equity.name }}</td>
+              <td class="amount">${{ equity.get_balance() }}</td>
+              <td>
+                <button class="btn delete-btn" onclick="deleteAccount('{{ equity.name }}', {{ equity.id }})">Delete</button>
+                <a href="{{ url_for('update_or_delete_account', account_id=equity.id) }}" class="btn update-btn">Edit</a>
+              </td>
+            </tr>
+            {% else %}
+            <td colspan="3" style="text-align: center; font-style: italic;">
+              No Equity Accounts Found.
+              <a href="{{ url_for('add_account') }}">Create one now.</a>
+            </td>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+
+      <script>
+      async function deleteAccount(accountName, accountId) {
+        confirmation = confirm(`Are you sure you want to delete Account ${accountName}?`);
+
+        if (confirmation) {
+          const row = document.querySelector(`tr[data-account-id="${accountId}"`);
+
+          try {
+            const response = await fetch(`/accounts/${accountId}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (response.ok) {
+              setTimeout(() => {
+                row.remove();
+              }, 300)
+
+              updateTransactionTableForInactiveAccount(accountId);
+            } else {
+              console.error(`Account ${accountId} not found`);
+            }
+          } catch (error) {
+            console.error(`Error deleting resource: ${error}`);
           }
-        } catch (error) {
-          console.error(`Error deleting resource: ${error}`);
         }
       }
-    }
-    </script>
+
+      async function updateTransactionTableForInactiveAccount(accountId) {
+        const transactionRows = document.querySelectorAll('.transaction-row');
+
+        transactionRows.forEach(
+          row => {
+            const debitCell = row.querySelector('.transaction-debit-account');
+            if (debitCell && debitCell.dataset.accountId === accountId) {
+              const accountNameText = debitCell.textContent;
+              if (!accountNameText.includes('(INACTIVE)')) {
+                debitCell.textContent = accountNameText + '(INACTIVE)';
+              }
+            }
+
+            const creditCell = row.querySelector('.transaction-credit-account');
+            if (creditCell && parseInt(creditCell.dataset.accountId, 10) === accountId) {
+              const accountNameText = creditCell.textContent;
+              if (!accountNameText.includes('(INACTIVE)')) {
+                creditCell.textContent = accountNameText + '(INACTIVE)';
+              }
+            }
+          }
+        );
+      }
+
+      async function deleteTransaction(transactionId) {
+        confirmation = confirm(`Are you sure you want to delete Transaction '${transactionId}'?`);
+
+        if (confirmation) {
+          const row = document.querySelector(`tr[data-transaction-id="${transactionId}"]`);
+
+          try {
+            const response = await fetch(`/transactions/${transactionId}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              updateAccountBalances(data.debitAccount.id, data.debitAccount.balance, data.creditAccount.id, data.creditAccount.balance); 
+              setTimeout(() => {
+                row.remove();
+                console.log(`Transaction ${transactionId} marked as deleted`);
+              }, 300)
+            } else {
+              console.error(`Transaction ${transactionId} not found`);
+            }
+          } catch (error) {
+            console.error(`Error deleting resource: ${error}`);
+          }
+        }
+      }
+
+      async function updateAccountBalances(debitAccountId, debitAccountBalance, creditAccountId, creditAccountBalance) {
+        const debitAccountRow = document.querySelector(`tr[data-account-id="${debitAccountId}"]`);
+        if (debitAccountRow) {
+          const balanceCell = debitAccountRow.querySelector('.amount');
+          if (balanceCell) {
+            balanceCell.textContent = `$${debitAccountBalance}`;
+          }
+        }
+
+        const creditAccountRow = document.querySelector(`tr[data-account-id="${creditAccountId}"]`);
+        if (creditAccountRow) {
+          const balanceCell = creditAccountRow.querySelector('.amount');
+          if (balanceCell) {
+            balanceCell.textContent = `$${creditAccountBalance}`;
+          }
+        }
+      }
+      </script>
   </body>
 </html>
