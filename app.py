@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, flash, redirect, jsonify
+from flask import Flask, render_template, request, url_for, flash, redirect, jsonify 
 from sqlalchemy import func
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
@@ -26,6 +26,16 @@ def index():
     return render_template('dashboard.html',
                            accounts=accounts,
                            transactions=transactions)
+
+@app.route('/accounts', methods=['GET'])
+def accounts():
+    accounts = db.session.execute(
+        db.select(Account).where(
+            Account.is_active
+        )
+    ).scalars().all()
+
+    return render_template('accounts.html', accounts=accounts)
 
 
 @app.route('/add_account', methods=['GET', 'POST'])
