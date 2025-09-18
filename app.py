@@ -27,20 +27,8 @@ def index():
                            accounts=accounts,
                            transactions=transactions)
 
-@app.route('/accounts', methods=['GET'])
+@app.route('/accounts', methods=['GET', 'POST'])
 def accounts():
-    accounts = db.session.execute(
-        db.select(Account).where(
-            Account.is_active
-        )
-    ).scalars().all()
-
-    return render_template('accounts.html', accounts=accounts)
-
-
-@app.route('/add_account', methods=['GET', 'POST'])
-def add_account():
-    """Add a new account"""
     if request.method == 'POST':
         account_name = request.form['account-name']
         account_type = request.form['account-type']
@@ -49,6 +37,7 @@ def add_account():
             account_type = AccountType[account_type]
         except KeyError:
             flash('Incorrect Account Type', 'error')
+            return redirect(url_for('add_account'))
 
         existing_account = Account.query.filter(
             func.lower(Account.name) == func.lower(account_name),
@@ -68,7 +57,19 @@ def add_account():
         except Exception as e:
             db.session.rollback()
             flash(f'Error adding account: {str(e)}', 'error')
+            return redirect(url_for('add_account'))
+    else:
+        accounts = db.session.execute(
+            db.select(Account).where(
+                Account.is_active
+            )
+        ).scalars().all()
 
+        return render_template('accounts.html', accounts=accounts)
+
+
+@app.route('/accounts/new', methods=['GET'])
+def add_account():
     return render_template('add_account.html')
 
 

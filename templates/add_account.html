@@ -136,7 +136,7 @@
         {% endif %}
       {% endwith %}
 
-      <form method="POST" id="account-form">
+      <form method="POST" action="{{ url_for('accounts') }}" id="account-form">
         <div class="form-group">
           <label for="account-name">Account Name *</label>
           <input type="text" id="account-name" name="account-name" required placeholder="e.g., Cash, Checking, Savings">
