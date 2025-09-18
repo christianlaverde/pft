@@ -133,17 +133,15 @@
       {% endif %}
       {% endwith %}
 
-      <h2>Chart of Accounts</h2>
+      <h2>Accounts</h2>
       <div class="actions">
         <a href="{{ url_for('add_account') }}" class="btn">Add New Account</a>
       </div>
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Name</th>
             <th>Account Type</th>
-            <!-- <th>Normal Balance</th> -->
             <th>Current Balance</th>
             <th>Actions</th>
           </tr>
@@ -151,10 +149,8 @@
         <tbody>
           {% for account in accounts %}
           <tr data-account-id={{ account.id }} class="account-row">
-            <td>{{ account.id }}</td>
             <td>{{ account.name }}</td>
             <td>{{ account.type.value.capitalize() }}</td>
-            <!-- <td>{{ account.normal_balance.value.capitalize() }}</td> -->
             <td class="amount">${{ account.get_balance() }}</td>
             <td>
               <button class="btn delete-btn" onclick="deleteAccount('{{ account.name }}', {{ account.id }})">Delete</button>
@@ -177,7 +173,6 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Description</th>
             <th>Date</th>
             <th>Amount</th>
@@ -190,7 +185,6 @@
           {% for transaction in transactions %}
           {% if transaction.is_active %}
           <tr data-transaction-id="{{ transaction.id }}" class="transaction-row">
-            <td>{{ transaction.id }}</td>
             <td>{{ transaction.description }}</td>
             <td>{{ transaction.date }}</td>
             <td class="amount">${{ transaction.amount }}</td>
