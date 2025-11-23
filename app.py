@@ -20,78 +20,77 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    return redirect(url_for('accounts'))
+    assets = db.session.execute(
+        db.select(Account).where(
+            Account.is_active,
+            Account.type == AccountType.ASSET
+        )
+    ).scalars().all()
+    expenses = db.session.execute(
+        db.select(Account).where(
+            Account.is_active,
+            Account.type == AccountType.EXPENSE
+        )
+    ).scalars().all()
+    incomes = db.session.execute(
+        db.select(Account).where(
+            Account.is_active,
+            Account.type == AccountType.INCOME
+        )
+    ).scalars().all()
+    liabilities = db.session.execute(
+        db.select(Account).where(
+            Account.is_active,
+            Account.type == AccountType.LIABILITY
+        )
+    ).scalars().all()
+    equities = db.session.execute(
+        db.select(Account).where(
+            Account.is_active,
+            Account.type == AccountType.EQUITY
+        )
+    ).scalars().all()
 
+    transactions = Transaction.query.order_by(Transaction.date.desc()).all()
 
-@app.route('/accounts', methods=['GET', 'POST'])
+    return render_template('dashboard.html',
+                           assets=assets,
+                           expenses=expenses,
+                           incomes=incomes,
+                           liabilities=liabilities,
+                           equities=equities,
+                           transactions=transactions)
+
+@app.route('/accounts', methods=['POST'])
 def accounts():
-    if request.method == 'POST':
-        account_name = request.form['account-name']
-        account_type = request.form['account-type']
+    account_name = request.form['account-name']
+    account_type = request.form['account-type']
 
-        try:
-            account_type = AccountType[account_type]
-        except KeyError:
-            flash('Incorrect Account Type', 'error')
-            return redirect(url_for('add_account'))
+    try:
+        account_type = AccountType[account_type]
+    except KeyError:
+        flash('Incorrect Account Type', 'error')
+        return redirect(url_for('add_account'))
 
-        existing_account = Account.query.filter(
-            func.lower(Account.name) == func.lower(account_name),
-            Account.is_active
-        ).first()
-        if existing_account:
-            flash('Account with this name already exists!', 'error')
-            return redirect(url_for('add_account'))
+    existing_account = Account.query.filter(
+        func.lower(Account.name) == func.lower(account_name),
+        Account.is_active
+    ).first()
+    if existing_account:
+        flash('Account with this name already exists!', 'error')
+        return redirect(url_for('add_account'))
 
-        new_account = Account(account_name=account_name, account_type=account_type)
+    new_account = Account(account_name=account_name, account_type=account_type)
 
-        try:
-            db.session.add(new_account)
-            db.session.commit()
-            flash(f'Account {account_name} added successfully!', 'success')
-            return redirect(url_for('index'))
-        except Exception as e:
-            db.session.rollback()
-            flash(f'Error adding account: {str(e)}', 'error')
-            return redirect(url_for('add_account'))
-    else:
-        assets = db.session.execute(
-            db.select(Account).where(
-                Account.is_active,
-                Account.type == AccountType.ASSET
-            )
-        ).scalars().all()
-        expenses = db.session.execute(
-            db.select(Account).where(
-                Account.is_active,
-                Account.type == AccountType.EXPENSE
-            )
-        ).scalars().all()
-        incomes = db.session.execute(
-            db.select(Account).where(
-                Account.is_active,
-                Account.type == AccountType.INCOME
-            )
-        ).scalars().all()
-        liabilities = db.session.execute(
-            db.select(Account).where(
-                Account.is_active,
-                Account.type == AccountType.LIABILITY
-            )
-        ).scalars().all()
-        equities = db.session.execute(
-            db.select(Account).where(
-                Account.is_active,
-                Account.type == AccountType.EQUITY
-            )
-        ).scalars().all()
-
-        return render_template('accounts.html',
-                               assets=assets,
-                               expenses=expenses,
-                               incomes=incomes,
-                               liabilities=liabilities,
-                               equities=equities)
+    try:
+        db.session.add(new_account)
+        db.session.commit()
+        flash(f'Account {account_name} added successfully!', 'success')
+        return redirect(url_for('index'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding account: {str(e)}', 'error')
+        return redirect(url_for('add_account'))
 
 
 @app.route('/accounts/new', methods=['GET'])
@@ -150,45 +149,41 @@ def update_or_delete_account(account_id):
         return render_template('update_account.html', account=account)
 
 
-@app.route('/transactions', methods=['GET', 'POST'])
+@app.route('/transactions', methods=['POST'])
 def transactions():
-    if request.method == 'POST':
-        description = request.form['transaction-description']
-        date = datetime.strptime(request.form['transaction-date'], '%Y-%m-%d')
-        amount = request.form['transaction-amount']
-        debit_account_id = request.form['transaction-debit-account']
-        credit_account_id = request.form['transaction-credit-account']
+    description = request.form['transaction-description']
+    date = datetime.strptime(request.form['transaction-date'], '%Y-%m-%d')
+    amount = request.form['transaction-amount']
+    debit_account_id = request.form['transaction-debit-account']
+    credit_account_id = request.form['transaction-credit-account']
 
-        try:
-            amount = Decimal(amount)
-        except InvalidOperation:
-            flash('Amount must be a $ Value', 'error')
-            return redirect(url_for('add_transaction'))
+    try:
+        amount = Decimal(amount)
+    except InvalidOperation:
+        flash('Amount must be a $ Value', 'error')
+        return redirect(url_for('add_transaction'))
 
-        if debit_account_id == credit_account_id:
-            flash('Debit and Credit Accounts cannot be the same', 'error')
-            return redirect(url_for('add_transaction'))
+    if debit_account_id == credit_account_id:
+        flash('Debit and Credit Accounts cannot be the same', 'error')
+        return redirect(url_for('add_transaction'))
 
-        new_transaction = Transaction(
-            description=description,
-            date=date,
-            amount=amount,
-            debit_account_id=debit_account_id,
-            credit_account_id=credit_account_id
-        )
+    new_transaction = Transaction(
+        description=description,
+        date=date,
+        amount=amount,
+        debit_account_id=debit_account_id,
+        credit_account_id=credit_account_id
+    )
 
-        try:
-            db.session.add(new_transaction)
-            db.session.commit()
-            flash('Transaction created successfully!', 'success')
-            return redirect(url_for('index'))
-        except Exception as e:
-            db.session.rollback()
-            flash(f'Error creating transaction: {str(e)}', 'error')
-            return redirect(url_for('add_transaction'))
-    else:
-        transactions = Transaction.query.order_by(Transaction.date.desc()).all()
-        return render_template('transactions.html', transactions=transactions)
+    try:
+        db.session.add(new_transaction)
+        db.session.commit()
+        flash('Transaction created successfully!', 'success')
+        return redirect(url_for('index'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error creating transaction: {str(e)}', 'error')
+        return redirect(url_for('add_transaction'))
 
 
 @app.route('/transactions/new', methods=['GET', 'POST'])
@@ -246,7 +241,7 @@ def update_or_delete_transaction(transaction_id):
         if debit_account_id == credit_account_id:
             flash('Debit and Credit Accounts cannot be the same', 'error')
             return render_template('update_transaction.html', transaction=transaction, accounts=accounts)
-        
+
         transaction.description = description
         transaction.date = date
         transaction.amount = amount
