@@ -7,26 +7,28 @@
     <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
     }
 
     .container {
       display: grid;
       grid-template-columns: 250px 1fr;
       height: 100vh;
-
-      max-width: 100%;
       margin: 0 auto;
-      background-color: white;
-      padding: 20px;
+      background-color: #BFD8BD;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
-    .sidebar {
-      background-color: #f5f5f5;
+    .sidebar { 
+      display: flex;
+      flex-direction: column;
+      background-color: #98C9A3;
       padding: 8px;
+    }
+
+    .sidebar-accounts {
+      flex-grow: 1;
     }
 
     .account-item {
@@ -36,8 +38,17 @@
     }
 
     .account-item:hover {
-      background-color: #e3f2fd;
+      background-color: #d5ddbc;
       cursor: pointer;
+    }
+
+    .account-category-header {
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
     }
 
     .context-menu {
@@ -55,7 +66,7 @@
     }
 
     .context-menu-item:hover {
-      background-color: #f0f0f0;
+      background-color: #d5ddbc;
     }
 
     .main-content {
@@ -69,31 +80,28 @@
     table {
       width: 100%;
       margin-bottom: 30px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-collapse: collapse;
+    }
+
+    th {
+      padding: 5px;
     }
 
     th, td {
-      padding: 10px;
       text-align: left;
-      border: 1px solid #ddd;
+      border: 1px solid #e9ecf0;
+    }
+
+    .date-column {
+      width: 110px;
+    }
+
+    .action-column {
+      width: 125px;
     }
 
     .amount-th {
       text-align: right;
-    }
-
-    th {
-      font-weight: bold;
-      text-transform: uppercase;
-      font-size: 14px;
-    }
-
-    tr:nth-child(even) {
-      background-color: #f8f9fa;
-    }
-
-    tr:hover {
-      background-color: #e3f2fd;
     }
 
     .amount {
@@ -102,10 +110,19 @@
       font-size: 18px;
     }
 
+    th {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+
+    tr:hover {
+      background-color: #d5ddbc;
+    }
+
     .alert {
       text-align: center;
       padding: 15px;
-      margin-bottom: 20px;
       border: 1px solid;
       border-radius: 4px;
     }
@@ -123,7 +140,7 @@
     }
 
     .btn {
-      background-color: #007bff;
+      background-color: #4a7c59;
       color: white;
       padding: 10px 20px;
       margin-bottom: 10px;
@@ -137,22 +154,22 @@
     }
 
     .btn:hover {
-      background-color: #0056b3;
+      background-color: #5a9169;
     }
 
     .delete-btn {
-      background-color: #dc3545;
-      padding: 6px 12px;
-      font-size: 12px;
-    }
-
-    .update-btn {
+      background-color: #c74440;
       padding: 6px 12px;
       font-size: 12px;
     }
 
     .delete-btn:hover {
-      background-color: #c82333;
+      background-color: #d95f5b;
+    }
+
+    .update-btn {
+      padding: 6px 12px;
+      font-size: 12px;
     }
     </style>
   </head>
@@ -174,83 +191,87 @@
       </div>
 
       <div class="sidebar">
-        <div class="account-group">
-          <h2>Assets</h2>
-          {% for asset in assets %}
-          <div class="account-item" data-account-id="{{ asset. id }}"
-            data-account-name="{{ asset.name }}">
-            <span class="account-name">{{ asset.name }}</span>
-            <span class="account-balance">{{ asset.get_balance() }}</span>
+        <div class="sidebar-accounts">
+          <div class="account-group">
+            <div class="account-category-header">Assets</div>
+            {% for asset in assets %}
+            <div class="account-item" data-account-id="{{ asset. id }}"
+              data-account-name="{{ asset.name }}">
+              <span class="account-name">{{ asset.name }}</span>
+              <span class="account-balance">{{ asset.get_balance() }}</span>
+            </div>
+            {% endfor %}
           </div>
-          {% endfor %}
+
+          <div class="account-group">
+            <div class="account-category-header">Expenses</div>
+            {% for expense in expenses %}
+            <div class="account-item" data-account-id="{{ expense.id }}"
+              data-account-name="{{ expense.name }}">
+              <span class="account-name">{{ expense.name }}</span>
+              <span class="account-balance">{{ expense.get_balance() }}</span>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="account-group">
+            <div class="account-category-header">Incomes</div>
+            {% for income in incomes %}
+            <div class="account-item" data-account-id="{{ income.id }}"
+              data-account-name="{{ income.name }}">
+              <span class="account-name">{{ income.name }}</span>
+              <span class="account-balance">{{ income.get_balance() }}</span>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="account-group">
+            <div class="account-category-header">Liabilities</div>
+            {% for liability in liabilities %}
+            <div class="account-item" data-account-id="{{ liability.id }}"
+              data-account-name="{{ liability.name }}">
+              <span class="account-name">{{ liability.name }}</span>
+              <span class="account-balance">{{ liability.get_balance() }}</span>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="account-group">
+            <div class="account-category-header">Equities</div>
+            {% for equity in equities %}
+            <div class="account-item" data-account-id="{{ equity.id }}"
+              data-account-name="{{ equity.name }}">
+              <span class="account-name">{{ equity.name }}</span>
+              <span class="account-balance">{{ equity.get_balance() }}</span>
+            </div>
+            {% endfor %}
+          </div>
         </div>
 
-        <div class="account-group">
-          <h2>Expenses</h2>
-          {% for expense in expenses %}
-          <div class="account-item" data-account-id="{{ expense.id }}"
-            data-account-name="{{ expense.name }}">
-            <span class="account-name">{{ expense.name }}</span>
-            <span class="account-balance">{{ expense.get_balance() }}</span>
-          </div>
-          {% endfor %}
-        </div>
-
-        <div class="account-group">
-          <h2>Incomes</h2>
-          {% for income in incomes %}
-          <div class="account-item" data-account-id="{{ income.id }}"
-            data-account-name="{{ income.name }}">
-            <span class="account-name">{{ income.name }}</span>
-            <span class="account-balance">{{ income.get_balance() }}</span>
-          </div>
-          {% endfor %}
-        </div>
-
-        <div class="account-group">
-          <h2>Liabilities</h2>
-          {% for liability in liabilities %}
-          <div class="account-item" data-account-id="{{ liability.id }}"
-            data-account-name="{{ liability.name }}">
-            <span class="account-name">{{ liability.name }}</span>
-            <span class="account-balance">{{ liability.get_balance() }}</span>
-          </div>
-          {% endfor %}
-        </div>
-
-        <div class="account-group">
-          <h2>Equities</h2>
-          {% for equity in equities %}
-          <div class="account-item" data-account-id="{{ equity.id }}"
-            data-account-name="{{ equity.name }}">
-            <span class="account-name">{{ equity.name }}</span>
-            <span class="account-balance">{{ equity.get_balance() }}</span>
-          </div>
-          {% endfor %}
-        </div>
+        <a href="{{ url_for('add_account') }}" class="btn">+ Add Account</a>
       </div>
 
       <div class="main-content">
         <h2>Transaction Log</h2>
+
         <div class="actions">
-          <a href="{{ url_for('add_transaction') }}" class="btn">New Transaction</a>
-          <a href="{{ url_for('add_account') }}" class="btn">New Account</a>
+          <a href="{{ url_for('add_transaction') }}" class="btn">+ Add Transaction</a>
         </div>
         <table>
           <thead>
             <tr>
-              <th>Date</th>
+              <th class="date-column">Date</th>
               <th>Description</th>
               <th class="amount-th">Amount</th>
               <th>From &rarr; To</th>
-              <th>Actions</th>
+              <th class="action-column">Actions</th>
             </tr>
           </thead>
           <tbody>
             {% for transaction in transactions %}
             {% if transaction.is_active %}
             <tr data-transaction-id="{{ transaction.id }}" class="transaction-row">
-              <td>{{ transaction.date }}</td>
+              <td class="date-column">{{ transaction.date }}</td>
               <td>{{ transaction.description }}</td>
               <td class="amount">${{ transaction.amount }}</td>
               <td class="transaction-flow" 
@@ -260,7 +281,7 @@
                 &rarr;
                 {{ transaction.debit_account.name }} {{ '(INACTIVE)' if not transaction.debit_account.is_active else '' }}
               </td>
-              <td>
+              <td class="action-column">
                 <button class="btn delete-btn" onclick="deleteTransaction({{ transaction.id }})">Delete</button>
                 <a href="{{ url_for('update_or_delete_transaction', transaction_id=transaction.id) }}" class="btn update-btn">Edit</a>
               </td>
