@@ -39,7 +39,6 @@
 
     .account-item:hover {
       background-color: #d5ddbc;
-      cursor: pointer;
     }
 
     .account-category-header {
@@ -70,11 +69,21 @@
     }
 
     .main-content {
-      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
 
-    h2 {
-      color: #444;
+    .main-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 20px 20px 10px;
+    }
+
+    .main-body {
+      flex-grow: 1;
+      overflow-y: auto;
     }
 
     table {
@@ -143,14 +152,11 @@
       background-color: #4a7c59;
       color: white;
       padding: 10px 20px;
-      margin-bottom: 10px;
-      margin-right: 10px;
       text-decoration: none;
       border: none;
       border-radius: 4px;
       font-size: 16px;
       cursor: pointer;
-      display: inline-block;
     }
 
     .btn:hover {
@@ -252,49 +258,51 @@
       </div>
 
       <div class="main-content">
-        <h2>Transaction Log</h2>
-
-        <div class="actions">
+        <div class="main-header">
+          <h2>Transaction Log</h2>
           <a href="{{ url_for('add_transaction') }}" class="btn">+ Add Transaction</a>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th class="date-column">Date</th>
-              <th>Description</th>
-              <th class="amount-th">Amount</th>
-              <th>From &rarr; To</th>
-              <th class="action-column">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for transaction in transactions %}
-            {% if transaction.is_active %}
-            <tr data-transaction-id="{{ transaction.id }}" class="transaction-row">
-              <td class="date-column">{{ transaction.date }}</td>
-              <td>{{ transaction.description }}</td>
-              <td class="amount">${{ transaction.amount }}</td>
-              <td class="transaction-flow" 
-                data-credit-account-id="{{ transaction.credit_account_id }}"
-                data-debit-account-id="{{ transaction.debit_account_id }}">
-                {{ transaction.credit_account.name }} {{ '(INACTIVE)' if not transaction.credit_account.is_active else '' }}
-                &rarr;
-                {{ transaction.debit_account.name }} {{ '(INACTIVE)' if not transaction.debit_account.is_active else '' }}
+
+        <div class="main-body">
+          <table>
+            <thead>
+              <tr>
+                <th class="date-column">Date</th>
+                <th>Description</th>
+                <th class="amount-th">Amount</th>
+                <th>From &rarr; To</th>
+                <th class="action-column">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for transaction in transactions %}
+              {% if transaction.is_active %}
+              <tr data-transaction-id="{{ transaction.id }}" class="transaction-row">
+                <td class="date-column">{{ transaction.date }}</td>
+                <td>{{ transaction.description }}</td>
+                <td class="amount">${{ transaction.amount }}</td>
+                <td class="transaction-flow" 
+                  data-credit-account-id="{{ transaction.credit_account_id }}"
+                  data-debit-account-id="{{ transaction.debit_account_id }}">
+                  {{ transaction.credit_account.name }} {{ '(INACTIVE)' if not transaction.credit_account.is_active else '' }}
+                  &rarr;
+                  {{ transaction.debit_account.name }} {{ '(INACTIVE)' if not transaction.debit_account.is_active else '' }}
+                </td>
+                <td class="action-column">
+                  <button class="btn delete-btn" onclick="deleteTransaction({{ transaction.id }})">Delete</button>
+                  <a href="{{ url_for('update_or_delete_transaction', transaction_id=transaction.id) }}" class="btn update-btn">Edit</a>
+                </td>
+              </tr>
+              {% endif %}
+              {% else %}
+              <td colspan="5" style="text-align: center; font-style: italic;">
+                No Transactions Found.
+                <a href="{{ url_for('add_transaction') }}">Create one now.</a>
               </td>
-              <td class="action-column">
-                <button class="btn delete-btn" onclick="deleteTransaction({{ transaction.id }})">Delete</button>
-                <a href="{{ url_for('update_or_delete_transaction', transaction_id=transaction.id) }}" class="btn update-btn">Edit</a>
-              </td>
-            </tr>
-            {% endif %}
-            {% else %}
-            <td colspan="5" style="text-align: center; font-style: italic;">
-              No Transactions Found.
-              <a href="{{ url_for('add_transaction') }}">Create one now.</a>
-            </td>
-            {% endfor %}
-          </tbody>
-        </table>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
