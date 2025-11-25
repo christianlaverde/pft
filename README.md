@@ -81,4 +81,4 @@ Penny uses traditional accounting principles:
 
 ## License
 
-[Optional - MIT is common for personal projects]
+This project is licensed under the MIT License - see below for details.
