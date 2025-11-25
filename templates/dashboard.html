@@ -204,60 +204,14 @@
 
       <div class="sidebar">
         <div class="sidebar-accounts">
-          <div class="account-group">
-            <div class="account-category-header">Assets</div>
-            {% for asset in assets %}
-            <div class="account-item" data-account-id="{{ asset. id }}"
-              data-account-name="{{ asset.name }}">
-              <span class="account-name">{{ asset.name }}</span>
-              <span class="account-balance">{{ asset.get_balance() }}</span>
-            </div>
-            {% endfor %}
-          </div>
+          {% from 'account_group.html' import account_group %}
 
-          <div class="account-group">
-            <div class="account-category-header">Expenses</div>
-            {% for expense in expenses %}
-            <div class="account-item" data-account-id="{{ expense.id }}"
-              data-account-name="{{ expense.name }}">
-              <span class="account-name">{{ expense.name }}</span>
-              <span class="account-balance">{{ expense.get_balance() }}</span>
-            </div>
-            {% endfor %}
-          </div>
+          {{ account_group('Assets', assets) }}
+          {{ account_group('Expenses', expenses) }}
+          {{ account_group('Income', incomes) }}
+          {{ account_group('Liabilities', liabilities) }}
+          {{ account_group('Equity', equities) }}
 
-          <div class="account-group">
-            <div class="account-category-header">Incomes</div>
-            {% for income in incomes %}
-            <div class="account-item" data-account-id="{{ income.id }}"
-              data-account-name="{{ income.name }}">
-              <span class="account-name">{{ income.name }}</span>
-              <span class="account-balance">{{ income.get_balance() }}</span>
-            </div>
-            {% endfor %}
-          </div>
-
-          <div class="account-group">
-            <div class="account-category-header">Liabilities</div>
-            {% for liability in liabilities %}
-            <div class="account-item" data-account-id="{{ liability.id }}"
-              data-account-name="{{ liability.name }}">
-              <span class="account-name">{{ liability.name }}</span>
-              <span class="account-balance">{{ liability.get_balance() }}</span>
-            </div>
-            {% endfor %}
-          </div>
-
-          <div class="account-group">
-            <div class="account-category-header">Equities</div>
-            {% for equity in equities %}
-            <div class="account-item" data-account-id="{{ equity.id }}"
-              data-account-name="{{ equity.name }}">
-              <span class="account-name">{{ equity.name }}</span>
-              <span class="account-balance">{{ equity.get_balance() }}</span>
-            </div>
-            {% endfor %}
-          </div>
         </div>
 
         <a href="{{ url_for('add_account') }}" class="btn">+ Add Account</a>

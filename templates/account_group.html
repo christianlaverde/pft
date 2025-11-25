@@ -1,0 +1,12 @@
+{% macro account_group(category_name, accounts) %}
+<div class="account-group">
+  <div class="account-category-header">{{ category_name }}</div>
+  {% for account in accounts %}
+  <div class="account-item" data-account-id="{{ account.id }}"
+    data-account-name="{{ account.name }}">
+    <span class="account-name">{{ account.name }}</span>
+    <span class="account-balance">{{ account.get_balance() }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endmacro %}
