@@ -24,19 +24,17 @@ class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     type = db.Column(db.Enum(AccountType), nullable=False)
-    normal_balance = db.Column(db.Enum(NormalBalance), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.now())
 
     def __init__(self, account_name, account_type):
         self.name = account_name
         self.type = account_type
-        self.normal_balance = Account._get_normal_balance(account_type)
 
-    @staticmethod
-    def _get_normal_balance(account_type):
+    @property
+    def normal_balance(self):
         """Returns normal balance based on account type"""
-        if account_type in (AccountType.ASSET, AccountType.EXPENSE):
+        if self.type in (AccountType.ASSET, AccountType.EXPENSE):
             return NormalBalance.DEBIT
         else:
             return NormalBalance.CREDIT
