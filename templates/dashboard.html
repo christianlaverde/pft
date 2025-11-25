@@ -39,7 +39,8 @@
       padding: 5px;
     }
 
-    .account-item:hover {
+    .account-item:hover,
+    .account-item.selected {
       background-color: #3d5f3a;
     }
 
@@ -117,10 +118,12 @@
 
     .amount-th {
       text-align: right;
+      padding-right: 20px;
     }
 
     .amount {
       text-align: right;
+      padding-right: 20px;
       font-family: monospace;
       font-size: 14px;
     }
@@ -131,7 +134,8 @@
       font-size: 14px;
     }
 
-    tr:hover {
+    tr:hover,
+    tr.selected{
       background-color: #d5ddbc;
     }
 
@@ -197,9 +201,14 @@
 
     <div class="container">
 
-      <div id="context-menu" class="context-menu" style="display: none;">
+      <div id="account-context-menu" class="context-menu" style="display: none;">
         <div class="context-menu-item" id="rename-account">Rename</div>
         <div class="context-menu-item" id="delete-account">Delete</div>
+      </div>
+
+      <div id="transaction-context-menu" class="context-menu" style="display: none;">
+        <div class="context-menu-item" id="edit-transaction">Edit</div>
+        <div class="context-menu-item" id="delete-transaction">Delete</div>
       </div>
 
       <div class="sidebar">
@@ -232,7 +241,6 @@
                 <th>To</th>
                 <th>Description</th>
                 <th class="amount-th">Amount</th>
-                <th class="action-column">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -244,10 +252,6 @@
                 <td>{{ transaction.debit_account.name }}</td>
                 <td>{{ transaction.description }}</td>
                 <td class="amount">${{ transaction.amount }}</td>
-                <td class="action-column">
-                  <button class="btn delete-btn" onclick="deleteTransaction({{ transaction.id }})">Delete</button>
-                  <a href="{{ url_for('update_or_delete_transaction', transaction_id=transaction.id) }}" class="btn update-btn">Edit</a>
-                </td>
               </tr>
               {% endif %}
               {% else %}
@@ -264,6 +268,9 @@
     </div>
 
     <script>
+
+    /* Sidebar Account Context Menu Setup */
+    let selectedAccount = null;
     let selectedAccountId = null;
     let selectedAccountName = null;
 
@@ -271,10 +278,17 @@
       item.addEventListener('contextmenu', (e) => {
         e.preventDefault();
 
+        if (selectedAccount) {
+          selectedAccount.classList.remove('selected');
+          selectedAccount = null;
+        }
+        item.classList.add('selected');
+        selectedAccount = item;
+
         selectedAccountId = item.dataset.accountId;
         selectedAccountName = item.dataset.accountName;
 
-        const menu = document.getElementById('context-menu');
+        const menu = document.getElementById('account-context-menu');
         menu.style.display = 'block';
         menu.style.left = e.pageX + 'px';
         menu.style.top = e.pageY + 'px';
@@ -282,7 +296,12 @@
     });
 
     document.addEventListener('click', () => {
-      document.getElementById('context-menu').style.display = 'none';
+      document.getElementById('account-context-menu').style.display = 'none';
+
+      if (selectedAccount) {
+        selectedAccount.classList.remove('selected');
+        selectedAccount = null;
+      }
     });
 
     document.getElementById('rename-account').addEventListener('click', () => {
@@ -303,38 +322,58 @@
           });
       }
     });
-    </script>
 
-    <script>
-    async function deleteTransaction(transactionId) {
-      confirmation = confirm(`Are you sure you want to delete Transaction '${transactionId}'?`);
+    /* Transaction Log Context Menu Setup */
+    let selectedRow = null;
+    let selectedTransactionId = null;
 
-      if (confirmation) {
-        const row = document.querySelector(`tr[data-transaction-id="${transactionId}"]`);
+    document.querySelectorAll('.transaction-row').forEach(row => {
+      row.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
 
-        try {
-          const response = await fetch(`/transactions/${transactionId}`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            setTimeout(() => {
-              row.remove();
-              console.log(`Transaction ${transactionId} marked as deleted`);
-              location.reload();
-            }, 300)
-          } else {
-            console.error(`Transaction ${transactionId} not found`);
-          }
-        } catch (error) {
-          console.error(`Error deleting resource: ${error}`);
+        if (selectedRow) {
+          selectedRow.classList.remove('selected');
+          selectedRow = null;
         }
+
+        row.classList.add('selected');
+        selectedRow = row;
+
+        selectedTransactionId = row.dataset.transactionId;
+
+        const menu = document.getElementById('transaction-context-menu');
+        menu.style.display = 'block';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+      });
+    });
+
+    document.addEventListener('click', () => {
+      document.getElementById('transaction-context-menu').style.display = 'none';
+
+      if (selectedRow) {
+        selectedRow.classList.remove('selected');
+        selectedRow = null;
       }
-    }
+    })
+
+    document.getElementById('edit-transaction').addEventListener('click', () => {
+      window.location.href = `/transactions/${selectedTransactionId}`;
+    });
+
+    document.getElementById('delete-transaction').addEventListener('click', () => {
+      if (confirm(`Delete Transaction "${selectedTransactionId}"?`)) {
+        fetch(`/transactions/${selectedTransactionId}`, {
+          method: 'DELETE'
+        }).then(response => {
+            if (response.ok) {
+              window.location.reload();
+            } else {
+              alert('Failed to delete transaction.');
+            }
+        });
+      }
+    });
     </script>
   </body>
 </html>
