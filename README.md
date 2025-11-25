@@ -81,4 +81,4 @@ Cents uses traditional accounting principles:
 
 ## License
 
-This project is licensed under the MIT License - see below for details.
+This project is licensed under the MIT License.
