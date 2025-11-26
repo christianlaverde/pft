@@ -1,6 +1,6 @@
 <div id="account-modal" class="modal" style="display: none;">
   <div class="modal-content">
-    <span class="modal-close">&times;</span>
+    <span class="modal-close" data-modal="account-modal">&times;</span>
     <h2>Add Account</h2>
     <form id="account-form" action="{{ url_for('accounts') }}" method="POST">
       <label for="account-name">Account Name *</label>
