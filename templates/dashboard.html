@@ -42,6 +42,7 @@
     .account-item:hover,
     .account-item.selected {
       background-color: #3d5f3a;
+      cursor: pointer;
     }
 
     .account-category-header {
@@ -84,6 +85,11 @@
       flex-direction: column;
       align-items: flex-start;
       padding: 20px 20px 10px;
+    }
+
+    .main-actions {
+      display: flex;
+      gap: 10px;
     }
 
     .main-body {
@@ -224,12 +230,16 @@
         </div>
 
         <a href="{{ url_for('add_account') }}" class="btn">+ Add Account</a>
+
       </div>
 
       <div class="main-content">
         <div class="main-header">
-          <h2>Transactions</h2>
-          <a href="{{ url_for('add_transaction') }}" class="btn">+ Add Transaction</a>
+          <h2 id="main-title">Transactions</h2>
+          <div class="main-actions">
+            <a href="{{ url_for('add_transaction') }}" class="btn">+ Add Transaction</a>
+            <button id="clear-filter-btn" class="btn" style="display: none;">Clear Filter</button>
+          </div>
         </div>
 
         <div class="main-body">
@@ -246,7 +256,10 @@
             <tbody>
               {% for transaction in transactions %}
               {% if transaction.is_active %}
-              <tr data-transaction-id="{{ transaction.id }}" class="transaction-row">
+              <tr class="transaction-row"
+                data-transaction-id="{{ transaction.id }}"
+                data-credit-account-id="{{ transaction.credit_account.id }}"
+                data-debit-account-id="{{ transaction.debit_account.id }}">
                 <td class="date-column">{{ transaction.date }}</td>
                 <td>{{ transaction.credit_account.name }}</td>
                 <td>{{ transaction.debit_account.name }}</td>
@@ -355,7 +368,7 @@
         selectedRow.classList.remove('selected');
         selectedRow = null;
       }
-    })
+    });
 
     document.getElementById('edit-transaction').addEventListener('click', () => {
       window.location.href = `/transactions/${selectedTransactionId}`;
@@ -371,8 +384,59 @@
             } else {
               alert('Failed to delete transaction.');
             }
-        });
+          });
       }
+    });
+
+    /* Account Transaction Filtering */
+    document.querySelectorAll('.account-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const accountId = item.dataset.accountId;
+        const accountName = item.dataset.accountName;
+
+        const mainTitleElement = document.getElementById('main-title');
+        mainTitleElement.textContent = accountName;
+
+        const clearFilterBtn = document.getElementById('clear-filter-btn');
+        clearFilterBtn.style.display = '';
+
+        filterTransactions(accountId);
+
+        document.querySelectorAll('.account-item').forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+      });
+    });
+
+    function filterTransactions(accountId) {
+      const transactionRows = document.querySelectorAll('.transaction-row');
+
+      if (!accountId) {
+        transactionRows.forEach(row => row.style.display = '');
+        return;
+      }
+
+      transactionRows.forEach(row => {
+        const debitAccountId = row.dataset.debitAccountId;
+        const creditAccountId = row.dataset.creditAccountId;
+
+        if (accountId === debitAccountId || accountId === creditAccountId) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    document.getElementById('clear-filter-btn').addEventListener('click', () => {
+      const mainTitleElement = document.getElementById('main-title');
+      mainTitleElement.textContent = 'Transactions';
+
+      const clearFilterBtn = document.getElementById('clear-filter-btn');
+      clearFilterBtn.style.display = 'none';
+
+      filterTransactions(null);
+
+      document.querySelectorAll('.account-item').forEach(i => i.classList.remove('selected'));
     });
     </script>
   </body>
