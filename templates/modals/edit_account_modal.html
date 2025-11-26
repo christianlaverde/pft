@@ -1,0 +1,15 @@
+<div id="edit-account-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="modal-close" data-modal="edit-account-modal">&times;</span>
+    <h2>Edit Account</h2>
+    <form id="edit-account-form" method="POST">
+      <input type="hidden" name="_method" value="PATCH">
+      <input type="hidden" id="edit-account-id" name="account-id">
+
+      <label for="edit-account-name">Account Name *</label>
+      <input type="text" id="edit-account-name" name="account-name" required placeholder="e.g., Cash, Checking, Groceries">
+
+      <button type="submit" class="btn">Update Account</button>
+    </form>
+  </div>
+</div>

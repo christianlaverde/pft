@@ -136,7 +136,6 @@ def update_or_delete_account(account_id):
 
         try:
             db.session.commit()
-            flash(f'Account Name {account.name} updated successfully!', 'success')
             return redirect(url_for('index'))
         except Exception as e:
             db.session.rollback()
