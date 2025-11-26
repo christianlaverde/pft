@@ -9,6 +9,7 @@ A clean, simple personal finance tracker using double-entry bookkeeping principl
 
 - **Account Management**: Track assets, liabilities, income, expenses, and equity accounts
 - **Transaction Logging**: Record financial transactions with proper double-entry accounting principles.
+- **Account Filtering**: Click any account in the sidebar to view only its transactions
 - **Real-time Balance Calculation**: Account balances update automatically based on transactions
 - **Clean Interface**: Sidebar navigation with organized account categories
 - **Transaction History**: Log of all financial activity
