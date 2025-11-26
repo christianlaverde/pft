@@ -70,7 +70,7 @@ def accounts():
         account_type = AccountType[account_type]
     except KeyError:
         flash('Incorrect Account Type', 'error')
-        return redirect(url_for('add_account'))
+        return redirect(url_for('index'))
 
     existing_account = Account.query.filter(
         func.lower(Account.name) == func.lower(account_name),
@@ -89,7 +89,7 @@ def accounts():
     except Exception as e:
         db.session.rollback()
         flash(f'Error adding account: {str(e)}', 'error')
-        return redirect(url_for('add_account'))
+        return redirect(url_for('index'))
 
 
 @app.route('/accounts/<int:account_id>', methods=['GET', 'POST', 'PATCH', 'DELETE'])

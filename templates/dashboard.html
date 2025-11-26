@@ -89,11 +89,6 @@
                 <td class="amount">${{ transaction.amount }}</td>
               </tr>
               {% endif %}
-              {% else %}
-              <td colspan="5" style="text-align: center; font-style: italic;">
-                No Transactions Found.
-                <a href="{{ url_for('add_transaction') }}">Create one now.</a>
-              </td>
               {% endfor %}
             </tbody>
           </table>
