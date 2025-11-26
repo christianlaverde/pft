@@ -393,12 +393,23 @@
 
     // Close modals when ESC is pressed
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' || e.key == 'Esc') {
-            document.getElementById('account-modal').style.display = 'none';
-            document.getElementById('edit-account-modal').style.display = 'none';
-            document.getElementById('transaction-modal').style.display = 'none';
-            document.getElementById('edit-transaction-modal').style.display = 'none';
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        const isAccountModalOpen = document.getElementById('account-modal').style.display === 'flex';
+        const isEditAccountModalOpen = document.getElementById('edit-account-modal').style.display === 'flex';
+        const isTransactionModalOpen = document.getElementById('transaction-modal').style.display === 'flex';
+        const isEditTransactionModalOpen = document.getElementById('edit-transaction-modal').style.display === 'flex';
+        if (isAccountModalOpen || isEditAccountModalOpen || isTransactionModalOpen || isEditTransactionModalOpen) {
+          document.getElementById('account-modal').style.display = 'none';
+          document.getElementById('edit-account-modal').style.display = 'none';
+          document.getElementById('transaction-modal').style.display = 'none';
+          document.getElementById('edit-transaction-modal').style.display = 'none';
+        } else {
+          const clearFilterBtn = document.getElementById('clear-filter-btn');
+          if (clearFilterBtn.style.display !== 'none') {
+            clearFilterBtn.click();
+          }
         }
+      }
     });
     </script>
   </body>
