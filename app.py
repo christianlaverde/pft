@@ -78,14 +78,13 @@ def accounts():
     ).first()
     if existing_account:
         flash('Account with this name already exists!', 'error')
-        return redirect(url_for('add_account'))
+        return redirect(url_for('index'))
 
     new_account = Account(account_name=account_name, account_type=account_type)
 
     try:
         db.session.add(new_account)
         db.session.commit()
-        flash(f'Account {account_name} added successfully!', 'success')
         return redirect(url_for('index'))
     except Exception as e:
         db.session.rollback()
