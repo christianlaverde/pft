@@ -154,11 +154,11 @@ def transactions():
         amount = Decimal(amount)
     except InvalidOperation:
         flash('Amount must be a $ Value', 'error')
-        return redirect(url_for('add_transaction'))
+        return redirect(url_for('index'))
 
     if debit_account_id == credit_account_id:
         flash('Debit and Credit Accounts cannot be the same', 'error')
-        return redirect(url_for('add_transaction'))
+        return redirect(url_for('index'))
 
     new_transaction = Transaction(
         description=description,
@@ -171,20 +171,11 @@ def transactions():
     try:
         db.session.add(new_transaction)
         db.session.commit()
-        flash('Transaction created successfully!', 'success')
         return redirect(url_for('index'))
     except Exception as e:
         db.session.rollback()
         flash(f'Error creating transaction: {str(e)}', 'error')
-        return redirect(url_for('add_transaction'))
-
-
-@app.route('/transactions/new', methods=['GET', 'POST'])
-def add_transaction():
-    accounts = Account.query.filter(
-        Account.is_active
-    ).all()
-    return render_template('add_transaction.html', accounts=accounts)
+        return redirect(url_for('index'))
 
 
 @app.route('/transactions/<int:transaction_id>', methods=['GET', 'POST', 'PATCH', 'DELETE'])

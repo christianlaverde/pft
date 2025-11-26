@@ -194,7 +194,7 @@
         <div class="main-header">
           <h2 id="main-title">Transactions</h2>
           <div class="main-actions">
-            <a href="{{ url_for('add_transaction') }}" class="btn">+ Add Transaction</a>
+            <button id="add-transaction-btn" class="btn">+ Add Transaction</a>
             <button id="clear-filter-btn" class="btn" style="display: none;">Clear Filter</button>
           </div>
         </div>
@@ -470,6 +470,25 @@
     editAccountModal.addEventListener('click', (e) => {
       if (e.target === editAccountModal) {
         editAccountModal.style.display = 'none';
+      }
+    });
+
+    /* Add Transaction Modal */
+    const transactionModal = document.getElementById('transaction-modal');
+    const addTransactionBtn = document.getElementById('add-transaction-btn');
+    const closeTransactionModalBtn = document.querySelector('[data-modal="transaction-modal"]');
+
+    addTransactionBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      transactionModal.style.display = 'flex';
+    });
+    closeTransactionModalBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      transactionModal.style.display = 'none';
+    });
+    transactionModal.addEventListener('click', (e) => {
+      if (e.target === transactionModal) {
+        transactionModal.style.display = 'none';
       }
     });
     </script>
