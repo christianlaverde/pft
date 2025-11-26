@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from models import db
+from app.models import db
 from sqlalchemy import text
 import os
 
