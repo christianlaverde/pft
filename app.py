@@ -220,11 +220,11 @@ def update_or_delete_transaction(transaction_id):
             amount = Decimal(amount)
         except InvalidOperation:
             flash('Amount must be a $ Value', 'error')
-            return render_template('update_transaction.html', transaction=transaction, accounts=accounts)
+            return redirect(url_for('index'))
 
         if debit_account_id == credit_account_id:
             flash('Debit and Credit Accounts cannot be the same', 'error')
-            return render_template('update_transaction.html', transaction=transaction, accounts=accounts)
+            return redirect(url_for('index'))
 
         transaction.description = description
         transaction.date = date
@@ -245,7 +245,7 @@ def update_or_delete_transaction(transaction_id):
     else:
         accounts = Account.query.filter(Account.is_active).all()
         transaction = Transaction.query.get_or_404(transaction_id)
-        return render_template('update_transaction.html', transaction=transaction, accounts=accounts)
+        return redirect(url_for('index'))
 
 
 if __name__ == '__main__':

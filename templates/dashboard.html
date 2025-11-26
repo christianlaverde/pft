@@ -34,6 +34,7 @@
       {% include 'modals/add_account_modal.html' %}
       {% include 'modals/edit_account_modal.html' %}
       {% include 'modals/add_transaction_modal.html' %}
+      {% include 'modals/edit_transaction_modal.html' %}
 
       <div class="sidebar">
         <div class="sidebar-accounts">
@@ -76,6 +77,9 @@
               {% if transaction.is_active %}
               <tr class="transaction-row"
                 data-transaction-id="{{ transaction.id }}"
+                data-description="{{ transaction.description }}"
+                data-date="{{ transaction.date }}"
+                data-amount="{{ transaction.amount }}"
                 data-credit-account-id="{{ transaction.credit_account.id }}"
                 data-debit-account-id="{{ transaction.debit_account.id }}">
                 <td class="date-column">{{ transaction.date }}</td>
@@ -153,6 +157,7 @@
     /* Transaction Log Context Menu Setup */
     let selectedRow = null;
     let selectedTransactionId = null;
+    let selectedTransaction = null;
 
     document.querySelectorAll('.transaction-row').forEach(row => {
       row.addEventListener('contextmenu', (e) => {
@@ -161,12 +166,22 @@
         if (selectedRow) {
           selectedRow.classList.remove('selected');
           selectedRow = null;
+          selectedTransaction = null;
         }
 
         row.classList.add('selected');
         selectedRow = row;
 
         selectedTransactionId = row.dataset.transactionId;
+
+        selectedTransaction = {
+          id: row.dataset.transactionId,
+          description: row.dataset.description,
+          date: row.dataset.date,
+          amount: row.dataset.amount,
+          debitAccountId: row.dataset.debitAccountId,
+          creditAccountId: row.dataset.creditAccountId
+        };
 
         const menu = document.getElementById('transaction-context-menu');
         menu.style.display = 'block';
@@ -181,11 +196,8 @@
       if (selectedRow) {
         selectedRow.classList.remove('selected');
         selectedRow = null;
+        selectedTransaction = null;
       }
-    });
-
-    document.getElementById('edit-transaction').addEventListener('click', () => {
-      window.location.href = `/transactions/${selectedTransactionId}`;
     });
 
     document.getElementById('delete-transaction').addEventListener('click', () => {
@@ -350,6 +362,33 @@
     transactionModal.addEventListener('click', (e) => {
       if (e.target === transactionModal) {
         transactionModal.style.display = 'none';
+      }
+    });
+
+    /* Edit Transaction Modal */
+    const editTransactionModal = document.getElementById('edit-transaction-modal');
+    const editTransactionForm = document.getElementById('edit-transaction-form');
+    const closeEditTransactionModalBtn = document.querySelector('[data-modal="edit-transaction-modal"]');
+
+    document.getElementById('edit-transaction').addEventListener('click', () => {
+      document.getElementById('edit-transaction-id').value = selectedTransaction.id;
+      document.getElementById('edit-transaction-description').value = selectedTransaction.description;
+      document.getElementById('edit-transaction-date').value = selectedTransaction.date;
+      document.getElementById('edit-transaction-amount').value = selectedTransaction.amount;
+      document.getElementById('edit-transaction-debit-account-id').value = selectedTransaction.debitAccountId;
+      document.getElementById('edit-transaction-credit-account-id').value = selectedTransaction.creditAccountId;
+
+      editTransactionForm.action = `/transactions/${selectedTransactionId}`;
+      editTransactionModal.style.display = 'flex';
+    });
+
+    closeEditTransactionModalBtn.addEventListener('click', () => {
+      editTransactionModal.style.display = 'none';
+    });
+
+    editTransactionModal.addEventListener('click', (e) => {
+      if (e.target === editTransactionModal) {
+        editTransactionModal.style.display = 'none';
       }
     });
     </script>
