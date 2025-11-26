@@ -1,0 +1,58 @@
+<div id="transaction-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="modal-close" data-modal="transaction-modal">&times;</span>
+    <h2>Add Transaction</h2>
+    <form id="transaction-form" action="{{ url_for('transactions') }}" method="POST">
+      <label for="transaction-description">Description *</label>
+      <input type="text" id="transaction-description" name="transaction-description" required>
+
+      <label for="transaction-date">Date *</label>
+      <input type="date" id="transaction-date" name="transaction-date" required>
+
+      <label for="transaction-amount">Amount (USD)</label>
+      <input type="text" id="transaction-amount" name="transaction-amount" required placeholder="$0.00">
+
+      <label for="transaction-credit-account">'From' Account</label>
+      <select id="transaction-credit-account" name="transaction-credit-account" required>
+        <option value="">-- Select 'From' Account --</option>
+        {% for asset in assets %}
+        <option value="{{ asset.id }}">{{ asset.name }}</option>
+        {% endfor %}
+        {% for expense in expenses %}
+        <option value="{{ expense.id }}">{{ expense.name }}</option>
+        {% endfor %}
+        {% for income in incomes %}
+        <option value="{{ income.id }}">{{ income.name }}</option>
+        {% endfor %}
+        {% for liability in liabilities %}
+        <option value="{{ liability.id }}">{{ liability.name }}</option>
+        {% endfor %}
+        {% for equity in equities %}
+        <option value="{{ equity.id }}">{{ equity.name }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="transaction-debit-account">'To' Account</label>
+      <select id="transaction-debit-account" name="transaction-debit-account" required>
+        <option value="">-- Select 'To' Account --</option>
+        {% for asset in assets %}
+        <option value="{{ asset.id }}">{{ asset.name }}</option>
+        {% endfor %}
+        {% for expense in expenses %}
+        <option value="{{ expense.id }}">{{ expense.name }}</option>
+        {% endfor %}
+        {% for income in incomes %}
+        <option value="{{ income.id }}">{{ income.name }}</option>
+        {% endfor %}
+        {% for liability in liabilities %}
+        <option value="{{ liability.id }}">{{ liability.name }}</option>
+        {% endfor %}
+        {% for equity in equities %}
+        <option value="{{ equity.id }}">{{ equity.name }}</option>
+        {% endfor %}
+      </select>
+
+      <button type="submit" class="btn">Create Transaction</button>
+    </form>
+  </div>
+</div>
