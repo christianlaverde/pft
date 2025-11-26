@@ -21,6 +21,63 @@
       border-radius: 8px;
     }
 
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 28px;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .modal-close:hover {
+      color: #333;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+
+    input[readonly] {
+      background-color: #f8f9fa;
+      color: #6c757d;
+    }
+
     .sidebar { 
       background-color: #2d4a2b;
       color: #e8f5e7;
@@ -218,6 +275,33 @@
         <div class="context-menu-item" id="delete-transaction">Delete</div>
       </div>
 
+      <div id="account-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span class="modal-close">&times;</span>
+          <h2>Add Account</h2>
+          <form id="account-form" action="{{ url_for('accounts') }}" method="POST">
+            <label for="account-name">Account Name *</label>
+            <input type="text" id="account-name" name="account-name" required placeholder="e.g., Cash, Checking, Groceries">
+
+            <label for="account-type">Account Type *</label>
+            <select id="account-type" name="account-type" required onchange="updateNormalBalance()">
+              <option value="">-- Select Account Type --</option>
+              <option value="ASSET">Asset</option>
+              <option value="LIABILITY">Liability</option>
+              <option value="EQUITY">Equity</option>
+              <option value="INCOME">Income</option>
+              <option value="EXPENSE">Expense</option>
+            </select>
+
+            <label for="account-normal-balance">Normal Balance</label>
+            <input type="text" id="account-normal-balance" name="account-normal-balance" 
+              readonly placeholder="Will auto-populate based on account type">
+
+            <button type="submit" class="btn">Create Account</button>
+          </form>
+        </div>
+      </div>
+
       <div class="sidebar">
         <div class="sidebar-accounts">
           {% from 'account_group.html' import account_group %}
@@ -230,7 +314,7 @@
 
         </div>
 
-        <a href="{{ url_for('add_account') }}" class="btn">+ Add Account</a>
+        <a id="add-account-btn" href="{{ url_for('add_account') }}" class="btn">+ Add Account</a>
 
       </div>
 
@@ -439,6 +523,64 @@
 
       document.querySelectorAll('.account-item').forEach(i => i.classList.remove('selected'));
     });
+
+    /* Account Modal */
+    const accountModal = document.getElementById('account-modal');
+    const addAccountBtn = document.getElementById('add-account-btn');
+    const closeModalBtn = document.querySelector('.modal-close');
+
+    addAccountBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      accountModal.style.display = 'flex';
+    });
+
+    closeModalBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      accountModal.style.display = 'none';
+    });
+    accountModal.addEventListener('click', (e) => {
+      if (e.target === accountModal) {
+        accountModal.style.display = 'none';
+      }
+    });
+
+    function updateNormalBalance() {
+      const accountType = document.getElementById('account-type').value;
+      const normalBalanceField = document.getElementById('account-normal-balance');
+
+      const normalBalances = {
+        'ASSET': 'Debit',
+        'LIABILITY': 'Credit',
+        'EQUITY': 'Credit',
+        'EXPENSE': 'Debit',
+        'INCOME': 'Credit'
+      };
+
+      if (accountType && normalBalances[accountType]) {
+        normalBalanceField.value = normalBalances[accountType];
+      } else {
+        normalBalanceField.value = '';
+      }
+    }
+
+    // Add Account Modal Validation
+    document.getElementById('account-form').addEventListener('submit', function(e) {
+      const accountName = document.getElementById('account-name').value.trim();
+      const accountType = document.getElementById('account-type').value;
+
+      if (!accountName) {
+        alert('Please enter an account name.');
+        e.preventDefault();
+        return;
+      }
+
+      if (!accountType) {
+        alert('Please select an account type.');
+        e.preventDefault();
+        return;
+      }
+    });
+
     </script>
   </body>
 </html>
