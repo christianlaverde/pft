@@ -3,6 +3,7 @@
 A clean, simple personal finance tracker using double-entry bookkeeping principles.
 
 ![Main Dashboard](screenshots/dashboard.png)
+![Adding an Account](screenshots/add-account.png)
 
 ## Features
 
