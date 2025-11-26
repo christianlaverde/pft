@@ -1,0 +1,138 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    height: 100vh;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.context-menu {
+    position: fixed;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+    min-width: 120px;
+}
+
+.context-menu-item {
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.context-menu-item:hover {
+    background-color: #d5ddbc;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.main-header {
+    background-color: #e8eae6;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 20px 10px;
+}
+
+.main-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.main-body {
+    background-color: #f2f3f1;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+    margin-bottom: 30px;
+    border-collapse: collapse;
+}
+
+th {
+    padding: 5px;
+}
+
+th, td {
+    text-align: left;
+    border: 1px solid #e9ecf0;
+}
+
+.date-column {
+    width: 110px;
+}
+
+.action-column {
+    padding-left: 10px;
+    width: 125px;
+}
+
+.amount-th {
+    text-align: right;
+    padding-right: 20px;
+}
+
+.amount {
+    text-align: right;
+    padding-right: 20px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+th {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+tr:hover,
+tr.selected{
+    background-color: #d5ddbc;
+}
+
+.alert {
+    text-align: center;
+    padding: 15px;
+    border: 1px solid;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #33593d;
+    background-color: #7bd492;
+    border-color: #68b37b;
+}
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.btn {
+    background-color: #4a7c59;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #5a9169;
+}
