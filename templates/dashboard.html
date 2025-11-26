@@ -33,18 +33,6 @@
       flex-grow: 1;
     }
 
-    .account-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 5px;
-    }
-
-    .account-item:hover,
-    .account-item.selected {
-      background-color: #3d5f3a;
-      cursor: pointer;
-    }
-
     .account-category-header {
       color: #a8c5a7;
       font-size: 16px;
@@ -53,6 +41,19 @@
       font-weight: 600;
       margin-top: 24px;
       margin-bottom: 8px;
+    }
+
+    .account-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 16px;
+      margin: 0 -8px;
+    }
+
+    .account-item:hover,
+    .account-item.selected {
+      background-color: #3d5f3a;
+      cursor: pointer;
     }
 
     .context-menu {
