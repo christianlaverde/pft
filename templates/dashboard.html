@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=0.5, user-scalable=yes">
     <title>Cents</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modals.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
     <style>
     body {
       font-family: Arial, sans-serif;
@@ -19,98 +21,6 @@
       margin: 0 auto;
       background-color: #fff;
       border-radius: 8px;
-    }
-
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 28px;
-      cursor: pointer;
-      color: #999;
-    }
-
-    .modal-close:hover {
-      color: #333;
-    }
-
-    .modal-content {
-      background-color: white;
-      padding: 30px;
-      border-radius: 8px;
-      max-width: 500px;
-      width: 90%;
-      position: relative;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #333;
-    }
-
-    input[type="text"], select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 16px;
-      box-sizing: border-box;
-      margin-bottom: 10px;
-    }
-
-    input[readonly] {
-      background-color: #f8f9fa;
-      color: #6c757d;
-    }
-
-    .sidebar { 
-      background-color: #2d4a2b;
-      color: #e8f5e7;
-      display: flex;
-      flex-direction: column;
-      padding: 8px;
-    }
-
-    .sidebar-accounts {
-      flex-grow: 1;
-    }
-
-    .account-category-header {
-      color: #a8c5a7;
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-      margin-top: 24px;
-      margin-bottom: 8px;
-    }
-
-    .account-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 5px 16px;
-      margin: 0 -8px;
-    }
-
-    .account-item:hover,
-    .account-item.selected {
-      background-color: #3d5f3a;
-      cursor: pointer;
     }
 
     .context-menu {
@@ -235,21 +145,6 @@
 
     .btn:hover {
       background-color: #5a9169;
-    }
-
-    .delete-btn {
-      background-color: #c74440;
-      padding: 6px 12px;
-      font-size: 12px;
-    }
-
-    .delete-btn:hover {
-      background-color: #d95f5b;
-    }
-
-    .update-btn {
-      padding: 6px 12px;
-      font-size: 12px;
     }
     </style>
   </head>
