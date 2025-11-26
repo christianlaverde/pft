@@ -172,6 +172,7 @@
 
       {% include 'modals/add_account_modal.html' %}
       {% include 'modals/edit_account_modal.html' %}
+      {% include 'modals/add_transaction_modal.html' %}
 
       <div class="sidebar">
         <div class="sidebar-accounts">
@@ -185,7 +186,7 @@
 
         </div>
 
-        <a id="add-account-btn" href="{{ url_for('add_account') }}" class="btn">+ Add Account</a>
+        <button id="add-account-btn" class="btn">+ Add Account</button>
 
       </div>
 
@@ -394,14 +395,14 @@
     /* Account Modal */
     const accountModal = document.getElementById('account-modal');
     const addAccountBtn = document.getElementById('add-account-btn');
-    const closeModalBtn = document.querySelector('.modal-close');
+    const closeAccountModalBtn = document.querySelector('[data-modal="account-modal"]');
 
     addAccountBtn.addEventListener('click', (e) => {
       e.preventDefault();
       accountModal.style.display = 'flex';
     });
 
-    closeModalBtn.addEventListener('click', (e) => {
+    closeAccountModalBtn.addEventListener('click', (e) => {
       e.preventDefault();
       accountModal.style.display = 'none';
     });
@@ -451,7 +452,7 @@
     /* Edit Account Modal */
     const editAccountModal = document.getElementById('edit-account-modal');
     const editAccountForm = document.getElementById('edit-account-form');
-    const closeEditModalBtn = document.querySelector('[data-modal="edit-account-modal"]');
+    const closeEditAccountModalBtn = document.querySelector('[data-modal="edit-account-modal"]');
 
     document.getElementById('rename-account').addEventListener('click', () => {
       document.getElementById('edit-account-id').value = selectedAccountId;
@@ -462,7 +463,7 @@
       editAccountModal.style.display = 'flex';
     });
 
-    closeEditModalBtn.addEventListener('click', () => {
+    closeEditAccountModalBtn.addEventListener('click', () => {
       editAccountModal.style.display = 'none';
     });
 

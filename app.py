@@ -92,11 +92,6 @@ def accounts():
         return redirect(url_for('add_account'))
 
 
-@app.route('/accounts/new', methods=['GET'])
-def add_account():
-    return render_template('add_account.html')
-
-
 @app.route('/accounts/<int:account_id>', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def update_or_delete_account(account_id):
     """Update or Delete Account"""
