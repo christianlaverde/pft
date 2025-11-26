@@ -268,6 +268,7 @@
     addAccountBtn.addEventListener('click', (e) => {
       e.preventDefault();
       accountModal.style.display = 'flex';
+      document.getElementById('account-name').focus();
     });
 
     closeAccountModalBtn.addEventListener('click', (e) => {
@@ -329,6 +330,7 @@
       editAccountForm.action = `/accounts/${selectedAccountId}`;
 
       editAccountModal.style.display = 'flex';
+      document.getElementById('edit-account-name').focus();
     });
 
     closeEditAccountModalBtn.addEventListener('click', () => {
@@ -349,6 +351,7 @@
     addTransactionBtn.addEventListener('click', (e) => {
       e.preventDefault();
       transactionModal.style.display = 'flex';
+      document.getElementById('transaction-description').focus();
     });
     closeTransactionModalBtn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -375,6 +378,7 @@
 
       editTransactionForm.action = `/transactions/${selectedTransactionId}`;
       editTransactionModal.style.display = 'flex';
+      document.getElementById('edit-transaction-description').focus();
     });
 
     closeEditTransactionModalBtn.addEventListener('click', () => {
@@ -385,6 +389,16 @@
       if (e.target === editTransactionModal) {
         editTransactionModal.style.display = 'none';
       }
+    });
+
+    // Close modals when ESC is pressed
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' || e.key == 'Esc') {
+            document.getElementById('account-modal').style.display = 'none';
+            document.getElementById('edit-account-modal').style.display = 'none';
+            document.getElementById('transaction-modal').style.display = 'none';
+            document.getElementById('edit-transaction-modal').style.display = 'none';
+        }
     });
     </script>
   </body>
