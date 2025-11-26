@@ -48,7 +48,7 @@ A clean, simple personal finance tracker using double-entry bookkeeping principl
 
 4. Run the application:
 ```bash
-   python app.py
+   python run.py
 ```
 
 5. Open your browser to `http://localhost:5001`
