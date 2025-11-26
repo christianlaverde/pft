@@ -1,0 +1,26 @@
+<div id="account-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="modal-close">&times;</span>
+    <h2>Add Account</h2>
+    <form id="account-form" action="{{ url_for('accounts') }}" method="POST">
+      <label for="account-name">Account Name *</label>
+      <input type="text" id="account-name" name="account-name" required placeholder="e.g., Cash, Checking, Groceries">
+
+      <label for="account-type">Account Type *</label>
+      <select id="account-type" name="account-type" required onchange="updateNormalBalance()">
+        <option value="">-- Select Account Type --</option>
+        <option value="ASSET">Asset</option>
+        <option value="LIABILITY">Liability</option>
+        <option value="EQUITY">Equity</option>
+        <option value="INCOME">Income</option>
+        <option value="EXPENSE">Expense</option>
+      </select>
+
+      <label for="account-normal-balance">Normal Balance</label>
+      <input type="text" id="account-normal-balance" name="account-normal-balance" 
+        readonly placeholder="Will auto-populate based on account type">
+
+      <button type="submit" class="btn">Create Account</button>
+    </form>
+  </div>
+</div>
