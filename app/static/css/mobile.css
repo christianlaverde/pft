@@ -34,7 +34,6 @@
 
     .mobile-nav-item.active {
         color: #e8f5e7;
-        background-color: #3d5f3a;
     }
 
     .mobile-nav-item:active {
@@ -45,11 +44,8 @@
     .mobile-nav-add {
         background-color: #4a7c59;
         color: white;
-        border-radius: 50%;
+        border-radius: 5px;
         width: 56px;
-        height: 56px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         flex: 0 0 auto;
     }
 
