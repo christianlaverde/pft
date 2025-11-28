@@ -144,10 +144,6 @@
     }
 
     /* Ensure modals are mobile-friendly */
-    .modal {
-        padding: 10px;
-    }
-
     .modal-content {
         width: 90%;
         max-width: 400px;
