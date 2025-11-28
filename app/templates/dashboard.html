@@ -2,12 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.5, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cents</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/modals.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
   </head>
   <body>
 
@@ -39,20 +40,17 @@
       <div class="sidebar">
         <div class="sidebar-accounts">
           {% from 'account_group.html' import account_group %}
-
           {{ account_group('Assets', assets) }}
           {{ account_group('Expenses', expenses) }}
           {{ account_group('Income', incomes) }}
           {{ account_group('Liabilities', liabilities) }}
           {{ account_group('Equity', equities) }}
-
         </div>
-
         <button id="add-account-btn" class="btn">+ Add Account</button>
-
       </div>
 
       <div class="main-content">
+
         <div class="main-header">
           <h2 id="main-title">Transactions</h2>
           <div class="main-actions">
@@ -92,6 +90,32 @@
               {% endfor %}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div class="mobile-nav">
+        <div class="mobile-nav-item" id="mobile-accounts-tab">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          </svg>
+          <span>Accounts</span>
+        </div>
+        <div class="mobile-nav-item mobile-nav-add" id="mobile-add-transaction-btn">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </div>
+        <div class="mobile-nav-item" id="mobile-transactions-tab">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+          <span>Transactions</span>
         </div>
       </div>
     </div>

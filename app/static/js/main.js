@@ -311,3 +311,59 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+/* Mobile Navigation Tab Switching */
+const mobileAccountsTab = document.getElementById('mobile-accounts-tab');
+const mobileTransactionsTab = document.getElementById('mobile-transactions-tab');
+const mobileAddTransactionBtn = document.getElementById('mobile-add-transaction-btn');
+const sidebar = document.querySelector('.sidebar');
+const mainContent = document.querySelector('.main-content');
+
+function initializeMobileView() {
+  if (window.innerWidth <= 768) {
+    mainContent.classList.add('mobile-active');
+    mobileTransactionsTab.classList.add('active');
+  }
+}
+
+if (mobileAccountsTab) {
+  mobileAccountsTab.addEventListener('click', () => {
+    sidebar.classList.add('mobile-active');
+    mainContent.classList.remove('mobile-active');
+    mobileAccountsTab.classList.add('active');
+    mobileTransactionsTab.classList.remove('active');
+  });
+}
+
+if (mobileTransactionsTab) {
+  mobileTransactionsTab.addEventListener('click', () => {
+    sidebar.classList.remove('mobile-active');
+    mainContent.classList.add('mobile-active');
+    mobileAccountsTab.classList.remove('active');
+    mobileTransactionsTab.classList.add('active');
+  });
+}
+
+// Mobile Add Transaction button
+if (mobileAddTransactionBtn) {
+  mobileAddTransactionBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    transactionModal.style.display = 'flex';
+    document.getElementById('transaction-description').focus();
+  });
+}
+
+// Initialize on page load
+initializeMobileView();
+
+// Re-initialize on window resize
+window.addEventListener('resize', () => {
+  if (window.innerWidth <= 768) {
+    initializeMobileView();
+  } else {
+    // Reset mobile classes when switching to desktop
+    sidebar.classList.remove('mobile-active');
+    mainContent.classList.remove('mobile-active');
+    mobileAccountsTab.classList.remove('active');
+    mobileTransactionsTab.classList.remove('active');
+  }
+});
