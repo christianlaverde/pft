@@ -13,6 +13,7 @@ A clean, simple personal finance tracker using double-entry bookkeeping principl
 - **Real-time Balance Calculation**: Account balances update automatically based on transactions
 - **Clean Interface**: Sidebar navigation with organized account categories
 - **Transaction History**: Log of all financial activity
+- **Mobile-Friendly Design**: Responsive layout with bottom navigation for seamless mobile usage
 
 ## Tech Stack
 
@@ -74,6 +75,12 @@ A clean, simple personal finance tracker using double-entry bookkeeping principl
 Cents uses traditional accounting principles:
 - **Assets & Expenses**: Increase with debits, decrease with credits
 - **Liabilities, Equity & Income**: Increase with credits, decrease with debits
+
+### Mobile Usage
+On mobile devices, the interface adapts with a bottom navigation bar:
+- **Accounts Tab**: View and manage all your accounts organized by category
+- **+ Button**: Quick access to add new transactions on the go
+- **Transactions Tab**: View your complete transaction history
 
 ## Future Improvements
 
